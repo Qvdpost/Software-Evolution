@@ -1,21 +1,80 @@
 module Syntax
 
-layout Whitespace = [\t-\n\r\ ]*;
-
-lexical IntegerLiteral = [0-9]+;
-
-// !>> Is not followed by ..
-// lexical Ident =  [a-zA-Z][a-zA-Z0-9]* !>> [a-zA-Z0-9];
-lexical Comment = "//";
-lexical AnythingExceptQuote = ![\"];
-start syntax Prog = prog: Exp* ;
-
-start syntax Exp
-  = integerLiteral: IntegerLiteral
+lexical LAYOUT =
+  [\t-\n \a0C-\a0D \ ]
   | Comment
-  | bracket "(" Exp ")"
-  > left mult: Exp "*" Exp
-  > left add: Exp "+" Exp
   ;
 
-// syntax Func = func: Ident name "()" "{" list[Exp]"}";
+layout LAYOUTLIST  =
+  LAYOUT* !>> [\t-\n \a0C-\a0D \ ] !>> (  [/]  [*]  ) !>> (  [/]  [/]  ) !>> "/*" !>> "//"
+  ;
+
+// lexical IntegerLiteral = [0-9]+;
+
+lexical LoC = ![Comment]+;
+
+lexical EOLCommentChars =
+  ![\n \a0D]*
+  ;
+
+lexical EndOfFile =
+
+  ;
+
+lexical LineTerminator =
+  [\n]
+  | EndOfFile !>> ![]
+  | [\a0D] [\n]
+  | CarriageReturn !>> [\n]
+  ;
+
+lexical CarriageReturn =
+  [\a0D]
+  ;
+
+lexical Comment =
+  "/**/"
+  | "//" EOLCommentChars !>> ![\n \a0D] LineTerminator
+  | "/*" !>> [*] CommentPart* "*/"
+  | "/**" !>> [/] CommentPart* "*/"
+  ;
+
+lexical UnicodeEscape =
+   unicodeEscape: "\\" [u]+ [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f] [0-9 A-F a-f]
+  ;
+
+lexical BlockCommentChars =
+  ![* \\]+
+  ;
+
+lexical EscChar =
+  "\\"
+  ;
+
+lexical EscEscChar =
+  "\\\\"
+  ;
+
+lexical Asterisk =
+  "*"
+  ;
+
+lexical CommentPart =
+  UnicodeEscape
+  | BlockCommentChars !>> ![* \\]
+  | EscChar !>> [\\ u]
+  | Asterisk !>> [/]
+  | EscEscChar
+  ;
+start syntax Prog = prog: LoC* ;
+
+// start syntax Exp
+//     = LoC
+//     ;
+
+// start syntax Exp
+//   = integerLiteral: IntegerLiteral
+//   | bracket "(" Exp ")"
+//   > left mult: Exp "*" Exp
+//   > left add: Exp "+" Exp
+//   ;
