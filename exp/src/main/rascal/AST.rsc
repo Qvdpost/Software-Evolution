@@ -1,9 +1,13 @@
 module AST
 
-data Func
-     = func(str name, list[str] formals, Exp body)
-     ;
+import Syntax;
+
+data Exp
+    = integerLiteral (str i)
+    | add(Exp lhs, Exp rhs)
+    | mult(Exp lhs, Exp rhs)
+    ;
 
 data Prog
-     = prog(list[Func] funcs)
+     = prog(list[Exp] exps)
      ;
