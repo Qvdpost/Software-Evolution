@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../java_projects/sampleJava"
+		},
+		{
+			"path": "../java_projects/smallsql0.21_src"
+		}
+	],
+	"settings": {}
+}
