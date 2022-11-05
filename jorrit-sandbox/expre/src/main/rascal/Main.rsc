@@ -25,5 +25,5 @@ void main(){
     Prog asts = load(x);
 
     println(countComments(asts));
-    // writeFile(astfile,asts);
+    writeFile(astfile,asts);
 }

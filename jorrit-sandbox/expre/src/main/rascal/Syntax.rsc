@@ -1,20 +1,18 @@
 module Syntax
 
-import IO;
-import ParseTree;
 
-
-layout Whitespace = [^\n\t-\n \r \ ]* !>> [^\n\t-\n \r \ ];
-lexical IntegerLiteral = [0-9]+ !>> [0-9];
+layout Whitespace = [\t-\n \r \ +{;}^\[\]()=!@#$]* !>> [\t-\n \r \ +{;}^\[\]=!@#$()];
+lexical Alpha = [a-zA-Z0-9]+ !>> [a-zA-Z0-9];
+// lexical All = Alpha \ Comment;
 
 lexical Comment
             = "//" ![\n]* $
             | "/*" ![*/]* "*/"
             ;
 
-start syntax Decls
-    = cmnts: Comment
-    | integers: IntegerLiteral ";"
+start syntax Decls =
+    cmnts: Comment
+    > alpha: Alpha
     ;
 
 start syntax Prog = prog: Decls* ;
