@@ -1,0 +1,9 @@
+prog([
+integers("3249420942",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(0,11,<1,0>,<1,11>),comments=()),
+cmnts("//744",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(13,5,<3,0>,<3,5>),comments=()),
+cmnts("/*\n\n\n*/",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(20,7,<5,0>,<8,2>),comments=()),
+cmnts("//",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(34,2,<11,4>,<11,6>),comments=()),
+cmnts("//edadg",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(41,7,<12,4>,<12,11>),comments=()),
+integers("34424",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(50,6,<14,0>,<14,6>),comments=()),
+integers("23",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(57,3,<14,7>,<14,10>),comments=()),
+cmnts("//edadg",src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(62,7,<16,0>,<16,7>),comments=())],src=|file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|(0,69,<1,0>,<16,7>),comments=())

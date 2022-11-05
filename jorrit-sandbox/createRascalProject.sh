@@ -1,10 +1,41 @@
+#!/bin/bash
+
+[[ -z $1 ]] && { echo "usage: createRascalProject <projectName>"; exit 1; }
+name=$1
+
+[[ -f $name || -d $name ]] && { echo "$name already exists"; exit 1; }
+mkdir -p "$name"
+touch "${name}/pom.xml"
+mkdir -p "${name}/src/main/rascal"
+touch "${name}/src/main/rascal/Main.rsc"
+mkdir -p "${name}/META-INF"
+touch "${name}/META-INF/RASCAL.MF"
+
+cat > "${name}/META-INF/RASCAL.MF" << EOM
+Manifest-Version: 0.0.1
+Project-Name: ${name}
+Source: src/main/rascal
+Require-Libraries: 
+EOM
+
+cat > "${name}/src/main/rascal/Main.rsc" << EOM
+module Main
+
+import IO;
+
+void main() {
+    println("Hello world");
+}
+EOM
+
+cat > "${name}/pom.xml" << EOM
 <?xml version="1.0" encoding="UTF-8"?>
   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.rascalmpl</groupId>
-  <artifactId>jorrit-sandbox/expr</artifactId>
+  <artifactId>${name}</artifactId>
   <version>0.1.0-SNAPSHOT</version>
 
   <properties>
@@ -50,12 +81,13 @@
         <version>0.8.2</version>
         <configuration>
           <errorsAsWarnings>true</errorsAsWarnings>
-          <bin>${project.build.outputDirectory}</bin>
+          <bin>\${project.build.outputDirectory}</bin>
           <srcs>
-            <src>${project.basedir}/src/main/rascal</src>
+            <src>\${project.basedir}/src/main/rascal</src>
           </srcs>
         </configuration>
       </plugin>
     </plugins>
   </build>
 </project>
+EOM
