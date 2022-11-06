@@ -1,18 +1,27 @@
 module Syntax
 
+layout Whitespace = [\t-\ ]* !>> [\t-\ ];
 
-layout Whitespace = [\t-\n \r \ +{;}^\[\]()=!@#$]* !>> [\t-\n \r \ +{;}^\[\]=!@#$()];
-lexical Alpha = [a-zA-Z0-9]+ !>> [a-zA-Z0-9];
-// lexical All = Alpha \ Comment;
+lexical AlphaNumeric = [a-zA-Z0-9]+ !>> [a-zA-Z0-9] ;
+lexical NonChars = "{" | "}" | "-" | "+" | "!" | "@" | "#" | "$" | "%"
+                | "^" | "&" | "*" | "(" | ")" | "[" | "]" | "|" | "?"
+                 | "\<" | "\>"  | "." | "," | "\\" | ";" | ":"| "=" | "~" | "_" | "\t" | " " | "\n" | "\r";
 
-lexical Comment
+lexical NonChar = NonChars+ !>> NonChars;
+
+lexical Comments
             = "//" ![\n]* $
             | "/*" ![*/]* "*/"
             ;
 
-start syntax Decls =
-    cmnts: Comment
-    > alpha: Alpha
+lexical OtherThenComment
+            = AlphaNumeric ![\n]* $
+            | NonChars ![\n]* $
+            ;
+
+start syntax Decls
+    = cmnts: Comments
+    | nonComment: OtherThenComment
     ;
 
 start syntax Prog = prog: Decls* ;

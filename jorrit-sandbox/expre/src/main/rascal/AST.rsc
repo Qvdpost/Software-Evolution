@@ -3,9 +3,8 @@ module AST
 import Syntax;
 
 data Decls
-    = alpha(str i)
-    | cmnts(str f)
-    | EOF(str f)
+    = cmnts(str i)
+    | nonComment(str i)
     ;
 
 data Prog

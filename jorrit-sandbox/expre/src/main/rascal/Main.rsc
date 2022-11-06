@@ -17,7 +17,8 @@ int countComments(Prog asts) {
 }
 
 void main(){
-    loc x = |file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.txt|;
+    loc x = |file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/test.java|;
+    // loc x = |project://sampleJava/src/Test.java|;
     loc astfile = |file:///Users/jorrit/Documents/Software-Evolution/jorrit-sandbox/expre/src/main/rascal/ast.json|;
     println(parseExp(x));
 
