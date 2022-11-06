@@ -5,7 +5,7 @@ layout Whitespace = [\t-\ ]* !>> [\t-\ ];
 lexical AlphaNumeric = [a-zA-Z0-9]+ !>> [a-zA-Z0-9] ;
 lexical NonChars = "{" | "}" | "-" | "+" | "!" | "@" | "#" | "$" | "%"
                 | "^" | "&" | "*" | "(" | ")" | "[" | "]" | "|" | "?"
-                 | "\<" | "\>"  | "." | "," | "\\" | ";" | ":"| "=" | "~" | "_" | "\t" | " " | "\n" | "\r";
+                 | "\<" | "\>"  | "." | "," | "\\" | ";" | ":"| "=" | "~" | "_" | "\t" | " " | "\r";
 
 lexical NonChar = NonChars+ !>> NonChars;
 
@@ -19,9 +19,9 @@ lexical OtherThenComment
             | NonChars ![\n]* $
             ;
 
-start syntax Decls
+syntax Decls
     = cmnts: Comments
     | nonComment: OtherThenComment
     ;
 
-start syntax Prog = prog: Decls* ;
+start syntax Prog = prog: Decls+;
