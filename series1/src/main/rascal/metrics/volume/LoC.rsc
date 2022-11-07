@@ -22,7 +22,7 @@ int countLoC(Prog asts) {
 }
 
 int mainLoC(loc project) {
-    list[Prog] asts = [ island::Load::load(path) | path <- {p | sp <- getPaths(project, "java"), p <- find(sp, "java"), isFile(p)} ];
+    list[island::AST::Prog] asts = [ island::Load::load(path) | path <- {p | sp <- getPaths(project, "java"), p <- find(sp, "java"), isFile(p)} ];
 
     return sum([countLoC(ast) | ast <- asts]);
 }

@@ -15,7 +15,8 @@ cat > "${name}/META-INF/RASCAL.MF" << EOM
 Manifest-Version: 0.0.1
 Project-Name: ${name}
 Source: src/main/rascal
-Require-Libraries: 
+Require-Libraries:
+  rascal/island
 EOM
 
 cat > "${name}/src/main/rascal/Main.rsc" << EOM
@@ -71,7 +72,7 @@ cat > "${name}/pom.xml" << EOM
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.0</version>
         <configuration>
-          <compilerArgument>-parameters</compilerArgument> 
+          <compilerArgument>-parameters</compilerArgument>
           <release>11</release>
         </configuration>
       </plugin>

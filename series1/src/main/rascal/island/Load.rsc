@@ -1,11 +1,11 @@
 module island::Load
 
-import Syntax;
-import Parse;
-import AST;
+import island::Syntax;
+import island::Parse;
+import island::AST;
 
 import ParseTree;
 
-AST::Prog implode(Syntax::Prog p) = implode(#AST::Prog, p);
+island::AST::Prog implode(island::Syntax::Prog p) = implode(#Prog, p);
 
-AST::Prog load(loc l) = implode(parseExp(l));
+island::AST::Prog load(loc l) = implode(parseExp(l));

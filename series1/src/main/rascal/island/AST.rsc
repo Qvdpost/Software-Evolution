@@ -1,6 +1,6 @@
 module island::AST
 
-import Syntax;
+import island::Syntax;
 
 import util::FileSystem;
 import IO;

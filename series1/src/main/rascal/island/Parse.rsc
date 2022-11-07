@@ -1,6 +1,6 @@
 module island::Parse
 
-import Syntax;
+import island::Syntax;
 import ParseTree;
 import IO;
 
