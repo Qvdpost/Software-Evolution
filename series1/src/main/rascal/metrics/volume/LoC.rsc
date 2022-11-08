@@ -10,6 +10,8 @@ import island::Load;
 import island::AST;
 import island::Syntax;
 
+public str lang = "java";
+
 int countLoC(Prog ast) {
     int count = 0;
 
@@ -21,7 +23,7 @@ int countLoC(Prog ast) {
 }
 
 list[island::AST::Prog] getIslandASTsFromProject(loc project) {
-    return getIslandASTsFromFiles([path | path <- {p | sp <- getPaths(project, "java"), p <- find(sp, "java"), isFile(p)}]);
+    return getIslandASTsFromFiles([path | path <- {p | sp <- getPaths(project, lang), p <- find(sp, lang), isFile(p)}]);
 }
 
 list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
@@ -30,6 +32,15 @@ list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
 
 island::AST::Prog getIslandASTsFromFile(loc file) {
     return island::Load::load(file);
+}
+
+list[Decls] getLoC(island::AST::Prog prog) {
+    list[Decls] decls = [];
+    visit (prog) {
+        case decl:nonComment(_): decls += decl;
+    }
+
+    return decls;
 }
 
 int mainLoC(loc project) {

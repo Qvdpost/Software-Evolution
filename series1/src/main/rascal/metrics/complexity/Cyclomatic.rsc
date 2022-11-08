@@ -6,22 +6,20 @@ import List;
 import Map;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
-import lang::java::jdt::m3::Core;
-import lang::java::jdt::m3::AST;
 
 import metrics::volume::LoC;
+import metrics::volume::UnitSize;
 
 /*
- * Unit complexity: uses cyclomatic complexity
+ * Unit complexity: uses cyclomatic complexity (McCabe)
  * M = E - N + 2P
- * In Java:
- * - https://perso.ensta-paris.fr/~diam/java/online/notes-java/principles_and_practices/complexity/complexity-java-method.html
+ * In Java (simplified):
  *
  * Start with a count of one for the method.
  *
- * Category		Add one for each of the following
+ * Category		+= 1 for each:
  * ==============================================
- * Returns 		Each return that isn't the last statement of a method.
+ * Returns 		return that isn't the last statement of a method.
  * Selection 	if, else, case, default.
  * Loops 		for, while, do-while, break, and continue.
  * Operators 	&&, ||, ?, and :
@@ -29,21 +27,18 @@ import metrics::volume::LoC;
  *
  * - https://www.theserverside.com/feature/How-to-calculate-McCabe-cyclomatic-complexity-in-Java
  *
- * How did we check it?? Using example functions and the PMD tool in Eclipse.
  */
-int cyclomaticComplexity(Declaration decl) {
+int cyclomaticComplexity(M3 ast) {
+
 	int complexity = 1;
 	bool firstReturn = true;
 
-	visit(decl) {
+	visit(ast) {
 		case \return(_): {
 			if (!firstReturn) complexity += 1;
 			else firstReturn = false;
 		}
 		case \if(_, _): complexity += 1;
-		// Initial thoughts:
-		// We need to add 2, because it contains an else as well.
-		// Turns out to be incorrect, though. Just add one.
 		case \if(_, _, _): complexity += 1;
 		case \case(_): complexity += 1;
 		case \defaultCase(): complexity += 1;
@@ -67,26 +62,18 @@ int cyclomaticComplexity(Declaration decl) {
 	return complexity;
 }
 
+public map[loc, int] unitComplexity(loc projectLocation) {
+	set[loc] methods = getMethods(projectLocation);
+	map[loc, int] result = ();
 
-list[Declaration] getMethods(list[Declaration] asts) {
-	list[Declaration] methods = [];
+	visit (methods) {
+        case currentMethod: loc _ :  result[currentMethod] = cyclomaticComplexity(createM3FromFile(currentMethod));
+    }
 
-	visit(asts) {
-		case method:\method(_, _, _, _, _): methods += method;
-	}
-
-	return methods;
-}
-
-map[Declaration, int] unitComplexity(list[Declaration] subtrees) {
-	map[Declaration, int] result = ();
-	for (subtree <- subtrees) {
-		result[subtree] = cyclomaticComplexity(subtree);
-	}
 	return result;
 }
 
-str complexityRank(list[Declaration] asts) {
+str complexityRank(int lines_of_code, loc project) {
 	map[str, int] risks = (
 		"low": 0,
 		"moderate": 0,
@@ -94,15 +81,9 @@ str complexityRank(list[Declaration] asts) {
 		"very high": 0
 	);
 
-	num lines_of_code = getLOC(asts);
+	map[loc, int] unit_sizes = countMethodLoC(project);
 
-	list[Declaration] units = getMethods(asts);
-
-	map[Declaration, int] unit_sizes = getUnitSize(units);
-
-
-	map[Declaration, int] unit_complexities = unitComplexity(units);
-
+	map[loc, int] unit_complexities = unitComplexity(project);
 
 	for (unit <- unit_complexities) {
 		if (unit_complexities[unit] <= 10) {
@@ -118,7 +99,7 @@ str complexityRank(list[Declaration] asts) {
 
 	map[str, num] relative_risks = (unit: (risks[unit]/lines_of_code) * 100 | unit <-risks);
 
-	// Maps values of moderate, high very high
+	// Maps values of moderate, high and very high
 	list[tuple[num, num, num, str]] rankings = [
 		<25, 0, 0, "++">,
 		<30, 5, 0, "+">,
@@ -135,5 +116,6 @@ str complexityRank(list[Declaration] asts) {
 			return rank[3];
 		}
 	}
+
 	return "Error";
 }

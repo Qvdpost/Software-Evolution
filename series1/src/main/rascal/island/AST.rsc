@@ -5,9 +5,9 @@ import island::Syntax;
 import util::FileSystem;
 import IO;
 
-data Decls
-    = cmnts(str i)
-    | nonComment(str i)
+data Decls(str text = "", loc src = |unknown:///|)
+    = cmnts(str text)
+    | nonComment(str text)
     ;
 
 data Prog
