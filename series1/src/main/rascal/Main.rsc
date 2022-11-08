@@ -11,14 +11,14 @@ void main() {
     loc project = |project://sampleJava|;
     // loc project = |project://series1|;
 
-    int lineCount = mainLoC(project);
+    <lineCount, rating> = mainLoC(project);
     map[loc, int] methodMap = countMethodLoC(project);
 
 
     for (key <- [f | f <- methodMap]) {
         println("LoC: <methodMap[key]> in method: <key>");
     }
-    println("Lines of code in <project>: <lineCount>.");
+    println("Lines of code in <project>: <lineCount> with a volume rating of: \'<rating>\'.");
 
     println("The unit complexity rating for <project> is: \'<complexityRank(lineCount, project)>\'");
 

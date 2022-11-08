@@ -12,7 +12,7 @@ import island::Syntax;
 
 public str lang = "java";
 
-int countLoC(Prog ast) {
+public int countLoC(Prog ast) {
     int count = 0;
 
     visit(ast) {
@@ -22,15 +22,15 @@ int countLoC(Prog ast) {
     return count;
 }
 
-list[island::AST::Prog] getIslandASTsFromProject(loc project) {
+public list[island::AST::Prog] getIslandASTsFromProject(loc project) {
     return getIslandASTsFromFiles([path | path <- {p | sp <- getPaths(project, lang), p <- find(sp, lang), isFile(p)}]);
 }
 
-list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
+public list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
     return [getIslandASTsFromFile(path) | path <- files];
 }
 
-island::AST::Prog getIslandASTsFromFile(loc file) {
+public island::AST::Prog getIslandASTsFromFile(loc file) {
     return island::Load::load(file);
 }
 
@@ -43,8 +43,31 @@ list[Decls] getLoC(island::AST::Prog prog) {
     return decls;
 }
 
-int mainLoC(loc project) {
+// According to http://www.cs.bsu.edu/homepages/dmz/cs697/langtbl.htm
+// A Java developer produces about 15 'Function Points' per month
+// and 53 statements per FP.
+// That equates to: 15 * 12 * 53 = 9540 LoC per person per year
+// So LoC / 9540 equates to nr of dev years which can be scored by
+// the current maintanability model.
+//
+// This is slightly different from the table in the scientific paper.
+// There a MY calculatation is done which equates to somewhere between
+// 8000 - 8250 LoC per year.
+private str calculateVolumeRating(int linesOfCode) {
+    int projectScore = linesOfCode / 9540;
+
+    return  projectScore <= 8   ? "++" :
+            projectScore <= 30  ? "+" :
+            projectScore <= 80  ? "o" :
+            projectScore <= 160 ? "-" :
+                                  "--";
+}
+
+public tuple[int, str] mainLoC(loc project) {
     list[island::AST::Prog] asts = getIslandASTsFromProject(project);
 
-    return sum([countLoC(ast) | ast <- asts]);
+    int linesOfCode = sum([countLoC(ast) | ast <- asts]);
+    str rating = calculateVolumeRating(linesOfCode);
+
+    return <linesOfCode, rating>;
 }
