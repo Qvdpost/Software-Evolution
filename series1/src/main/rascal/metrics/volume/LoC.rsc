@@ -11,10 +11,10 @@ import island::AST;
 import island::Parse;
 import island::Syntax;
 
-int countLoC(Prog asts) {
+int countLoC(Prog ast) {
     int count = 0;
 
-    visit(asts) {
+    visit(ast) {
         case \nonComment(_): {count += 1;}
     }
 
@@ -26,7 +26,11 @@ list[island::AST::Prog] getIslandASTsFromProject(loc project) {
 }
 
 list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
-    return [island::Load::load(path) | path <- files];
+    return [getIslandASTsFromFile(path) | path <- files];
+}
+
+list[island::AST::Prog] getIslandASTsFromFile(loc file) {
+    return island::Load::load(file);
 }
 
 int mainLoC(loc project) {
