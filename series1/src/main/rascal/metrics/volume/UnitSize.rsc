@@ -10,7 +10,8 @@ public set[loc] getMethods(loc projectLocation) {
     return methods(model);
 }
 
-public map[loc, int] countMethodLoC(set[loc] methods){
+public map[loc, int] countMethodLoC(loc projectLocation){
+    set[loc] methods = getMethods(projectLocation);
     map[loc, int] methodSizes = ();
 
     visit (methods) {

@@ -6,13 +6,16 @@ import metrics::volume::LoC;
 import metrics::volume::UnitSize;
 
 void main() {
-    // loc project = |project://smallsql0.21_src|;
-    loc project = |project://sampleJava|;
+    loc project = |project://smallsql0.21_src|;
+    // loc project = |project://sampleJava|;
 
     int lineCount = mainLoC(project);
-    map[loc, int] methodMap = countMethodLoC(getMethods(project));
+    map[loc, int] methodMap = countMethodLoC(project);
 
-    println(methodMap);
+
+    for (key <- [f | f <- methodMap]) {
+        println("LoC: <methodMap[key]> in method: <key>");
+    }
     println("Lines of code in <project>: <lineCount>.");
 
 }
