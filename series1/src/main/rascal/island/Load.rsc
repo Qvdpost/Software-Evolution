@@ -9,3 +9,4 @@ import ParseTree;
 island::AST::Prog implode(island::Syntax::Prog p) = implode(#Prog, p);
 
 island::AST::Prog load(loc l) = implode(parseExp(l));
+island::AST::Prog load(str l) = implode(parseExp(l));

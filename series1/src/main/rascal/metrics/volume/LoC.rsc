@@ -8,7 +8,6 @@ import Set;
 
 import island::Load;
 import island::AST;
-import island::Parse;
 import island::Syntax;
 
 int countLoC(Prog asts) {
