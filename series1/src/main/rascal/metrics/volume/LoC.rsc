@@ -29,7 +29,7 @@ list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
     return [getIslandASTsFromFile(path) | path <- files];
 }
 
-list[island::AST::Prog] getIslandASTsFromFile(loc file) {
+island::AST::Prog getIslandASTsFromFile(loc file) {
     return island::Load::load(file);
 }
 
