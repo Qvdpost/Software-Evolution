@@ -7,15 +7,10 @@ import lib::Common;
 import metrics::volume::LoC;
 import Map;
 import IO;
-// Get all methods of a Java project, based on project location
-public set[loc] getMethods(loc projectLocation) {
-    M3 model = createM3FromMavenProject(projectLocation);
-    return methods(model);
-}
 
 // For each method count the lines of codes
-public map[loc, int] countMethodLoC(loc projectLocation){
-    set[loc] methods = getMethods(projectLocation);
+public map[loc, int] countMethodLoC(M3 model, loc projectLocation){
+    set[loc] methods = methods(model);
     map[loc, int] methodSizes = ();
 
     visit (methods) {
@@ -25,9 +20,9 @@ public map[loc, int] countMethodLoC(loc projectLocation){
     return methodSizes;
 }
 
-public tuple[map[str, num],str] getUnitVolumeRiskProfile(loc project) {
+public tuple[map[str, num],str] getUnitVolumeRiskProfile(M3 model, loc project) {
 
-	map[loc, int] unit_sizes = countMethodLoC(project);
+	map[loc, int] unit_sizes = countMethodLoC(model, project);
     int nrOfMethods = size(unit_sizes);
     map[str, real] riskProfile = getRiskProfile();
 

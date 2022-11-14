@@ -63,24 +63,24 @@ int cyclomaticComplexity(M3 ast) {
 	return complexity;
 }
 
-public map[loc, int] unitComplexity(loc projectLocation) {
-	set[loc] methods = getMethods(projectLocation);
+public map[loc, int] unitComplexity(M3 model) {
+	set[loc] methodSet = methods(model);
 	map[loc, int] result = ();
 
-	visit (methods) {
+	visit (methodSet) {
         case currentMethod: loc _ :  result[currentMethod] = cyclomaticComplexity(createM3FromFile(currentMethod));
     }
 
 	return result;
 }
 
-public tuple[map[str, num],str] complexityRank(int lines_of_code, loc project) {
+public tuple[map[str, num],str] complexityRank(M3 model, int lines_of_code, loc project) {
     map[str, real] risks = getRiskProfile();
 
 
-	map[loc, int] unit_sizes = countMethodLoC(project);
+	map[loc, int] unit_sizes = countMethodLoC(model, project);
 
-	map[loc, int] unit_complexities = unitComplexity(project);
+	map[loc, int] unit_complexities = unitComplexity(model);
 
 	for (unit <- unit_complexities) {
 		if (unit_complexities[unit] <= 10) {
@@ -95,6 +95,7 @@ public tuple[map[str, num],str] complexityRank(int lines_of_code, loc project) {
 	}
 
 	map[str, num] relative_risks = (unit: (risks[unit]/lines_of_code) * 100 | unit <-risks);
+	println(relative_risks);
 
     list[tuple[num, num, num, str]] rankings = getRankings();
 
