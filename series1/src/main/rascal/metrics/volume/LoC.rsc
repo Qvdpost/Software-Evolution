@@ -22,6 +22,11 @@ public int countLoC(Prog ast) {
     return count;
 }
 
+public int countLoC(loc file) {
+    island::AST::Prog ast = getIslandASTsFromFile(file);
+    return countLoC(ast);
+}
+
 public list[island::AST::Prog] getIslandASTsFromProject(loc project) {
     return getIslandASTsFromFiles([path | path <- {p | sp <- getPaths(project, lang), p <- find(sp, lang), isFile(p)}]);
 }

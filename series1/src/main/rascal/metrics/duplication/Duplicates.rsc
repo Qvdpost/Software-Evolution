@@ -7,6 +7,7 @@ import island::AST;
 import IO;
 import List;
 import Set;
+import Map;
 import Location;
 
 map[str, set[loc]] initOrIncrMap(map[str, set[loc]] mapping, str key, loc val) {
@@ -15,6 +16,13 @@ map[str, set[loc]] initOrIncrMap(map[str, set[loc]] mapping, str key, loc val) {
 
 	return mapping;
 }
+
+map[str, set[loc]] filterValMap(map[str, set[loc]] mapping, str key, loc val) {
+	if (key in mapping) {mapping[key] -= val;}
+
+	return mapping;
+}
+
 
 list[Decls] getNLoC(list[Decls] LoC, int init, int step) {
     return slice(LoC, init, step);
@@ -28,36 +36,122 @@ loc coverBlock(list[Decls] LoC) {
     return cover([line.src | line <- LoC]);
 }
 
-void main() {
-    loc project = |project://sampleJava|;
-
-    list[island::AST::Prog] asts = getIslandASTsFromProject(project);
-
-	map[str, set[loc]] occurrences = ();
-
+map[str, set[loc]] getBlocksOfN(map[str, set[loc]] occurrences, list[island::AST::Prog] asts, int N) {
     for (ast <- asts) {
         list[Decls] LoC = getLoC(ast);
 
         int fileLoC = size(LoC);
 
-        println(fileLoC);
-
-        if (fileLoC < 6) {
-            return;
+        if (fileLoC < N) {
+            continue;
         }
-        for (init <- [0 .. fileLoC]) {
-            for (step <- [6 .. fileLoC - init + 1], fileLoC - init >= 6) {
-                block = getNLoC(LoC, init, step);
-                occurrences = initOrIncrMap(occurrences, concatLoC(block), coverBlock(block));
+
+        for (init <- [0 .. fileLoC - N + 1]) {
+            block = getNLoC(LoC, init, N);
+            occurrences = initOrIncrMap(occurrences, concatLoC(block), coverBlock(block));
+        }
+    }
+    return occurrences;
+}
+
+map[str, map[loc, str]] explodeDuplicates(map[set[loc], str] duplicates) {
+    map[str, map[loc, str]] result = ();
+    for (locs <- duplicates) {
+        for (src <- locs) {
+            if (src.file notin result) {
+                result[src.file] = ();
             }
+            result[src.file][src] = duplicates[locs];
         }
     }
+    return result;
+}
 
-
+map[str, set[loc]] getDuplicates(map[str, set[loc]] occurrences, int treshold) {
+    map[str, set[loc]] result = ();
     for (block <- occurrences) {
-        if (size(occurrences[block]) > 1) {
-            println("<block> \n occurs at: \n <occurrences[block]>");
+        if (size(occurrences[block]) > treshold) {
+            result[block] = occurrences[block];
         }
     }
+    return result;
+}
+
+str merge(str l, str r) {
+
+
+    for ([*head, *l, *_] := r)
+    {
+        println("gotcha at <size(head)>");
+    }
+}
+
+map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
+
+    map[set[loc], str] invertedDuplicates = invertUnique(duplicates);
+    map[str, map[loc, str]] explodedInvertedDuplicates = explodeDuplicates(invertedDuplicates);
+
+    // Bubble sort like algorithm to merge overlapping blocks of code.
+    for (srcFile <- explodedInvertedDuplicates) {
+
+        // Sorts the occurrences of codeblocks by order of appearance to more easily find overlap
+        list[loc] srcs = sort(domain(explodedInvertedDuplicates[srcFile]), beginsBefore);
+        int merged = 0;
+
+        do {
+            merged = 0;
+            for (init <- [0 .. size(srcs) - 1], init < size(srcs) - 1 - merged) {
+                list[loc] pair = slice(srcs, init, 2);
+
+                if (isOverlapping(pair[0], pair[1])) {
+                    // Refresh the sources to reflect merging of a pair of locs
+                    srcs = srcs[0 .. init] + [cover(pair)] + srcs[init + 2 .. ];
+
+                    str block = concatLoC(getLoC(getIslandASTsFromFile(cover(pair))));
+
+                    // Adds the new block of code to the exploded duplicate blocks
+                    explodedInvertedDuplicates[srcFile][cover(pair)] = block;
+
+                    // Filters values of merged sources from original duplicates
+                    duplicates = filterValMap(duplicates, explodedInvertedDuplicates[srcFile][pair[0]], pair[0]);
+                    duplicates = filterValMap(duplicates, explodedInvertedDuplicates[srcFile][pair[1]], pair[1]);
+
+                    // Adds the new block to the original duplicates
+                    duplicates = initOrIncrMap(duplicates, block, cover(pair));
+                    merged += 1;
+                }
+            }
+        } while (merged > 0);
+    }
+    return duplicates;
+}
+
+void main() {
+    // loc project = |project://sampleJava|;
+    loc project = |project://smallsql0.21_src|;
+
+    list[island::AST::Prog] asts = getIslandASTsFromProject(project);
+
+	map[str, set[loc]] occurrences = ();
+
+    occurrences = getBlocksOfN(occurrences, asts, 6);
+
+    map[str, set[loc]] duplicates = getDuplicates(occurrences, 1);
+
+    duplicates = mergeBlocks(duplicates);
+
+    map[str, set[loc]] duplicateBlocks = getDuplicates(duplicates, 0);
+
+    int duplicateLoC = 0;
+    for (clone <- duplicateBlocks) {
+        println(duplicateBlocks[clone]);
+        for (src <- duplicateBlocks[clone]) {
+            duplicateLoC += countLoC(src);
+        }
+    }
+
+    // TODO: Series 2: voor elke originele code class met nog maar 1 element -> zoek in backup van originele code class naar de andere dupolicates en herstel de code class
+
+    println("Totale duplicate lines of code: <duplicateLoC>");
 
 }
