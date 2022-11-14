@@ -6,6 +6,7 @@ import List;
 import Map;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
+import lib::Common;
 
 import metrics::volume::LoC;
 import metrics::volume::UnitSize;
@@ -74,12 +75,8 @@ public map[loc, int] unitComplexity(loc projectLocation) {
 }
 
 str complexityRank(int lines_of_code, loc project) {
-	map[str, int] risks = (
-		"low": 0,
-		"moderate": 0,
-		"high": 0,
-		"very high": 0
-	);
+    map[str, real] risks = getRiskProfile();
+
 
 	map[loc, int] unit_sizes = countMethodLoC(project);
 
@@ -93,25 +90,18 @@ str complexityRank(int lines_of_code, loc project) {
 		} else if (unit_complexities[unit] <= 50) {
 			risks["high"] += unit_sizes[unit];
 		} else {
-			risks["very high"] += unit_sizes[unit];
+			risks["very_high"] += unit_sizes[unit];
 		}
 	}
 
 	map[str, num] relative_risks = (unit: (risks[unit]/lines_of_code) * 100 | unit <-risks);
 
-	// Maps values of moderate, high and very high
-	list[tuple[num, num, num, str]] rankings = [
-		<25, 0, 0, "++">,
-		<30, 5, 0, "+">,
-		<40, 10, 0, "o">,
-		<50, 15, 5, "-">,
-		<100, 100, 100, "--">
-	];
+    list[tuple[num, num, num, str]] rankings = getRankings();
 
 	for (rank <- rankings) {
 		if (relative_risks["moderate"] <= rank[0]
 			&& relative_risks["high"] <= rank[1]
-			&& relative_risks["very high"] <= rank[2]) {
+			&& relative_risks["very_high"] <= rank[2]) {
 
 			return rank[3];
 		}

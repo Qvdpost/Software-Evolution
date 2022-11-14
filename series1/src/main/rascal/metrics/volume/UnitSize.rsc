@@ -3,13 +3,17 @@ module metrics::volume::UnitSize
 
 import lang::java::m3::Core;
 import lang::java::m3::AST;
+import lib::Common;
 import metrics::volume::LoC;
+import Map;
 
+// Get all methods of a Java project, based on project location
 public set[loc] getMethods(loc projectLocation) {
     M3 model = createM3FromMavenProject(projectLocation);
     return methods(model);
 }
 
+// For each method count the lines of codes
 public map[loc, int] countMethodLoC(loc projectLocation){
     set[loc] methods = getMethods(projectLocation);
     map[loc, int] methodSizes = ();
@@ -19,4 +23,39 @@ public map[loc, int] countMethodLoC(loc projectLocation){
     }
 
     return methodSizes;
+}
+
+public str getUnitVolumeRiskProfile(loc project) {
+
+	map[loc, int] unit_sizes = countMethodLoC(project);
+    int nrOfMethods = size(unit_sizes);
+    map[str, real] riskProfile = getRiskProfile();
+
+	for (unit <- unit_sizes) {
+
+		if (unit_sizes[unit] <= 30) {
+			riskProfile["low"] += 1.0;
+        } else if (unit_sizes[unit] <= 30) {
+			riskProfile["moderate"] += 1.0;
+		} else if (unit_sizes[unit] <= 40) {
+			riskProfile["high"] += 1.0;
+		} else {
+			riskProfile["very_high"] += 1.0;
+		}
+    }
+
+	map[str, num] relative_risks = (unit: (riskProfile[unit]/nrOfMethods) * 100.0 | unit <- riskProfile);
+
+    list[tuple[num, num, num, str]] rankings = getRankings();
+
+	for (rank <- rankings) {
+		if (relative_risks["moderate"] <= rank[0]
+			&& relative_risks["high"] <= rank[1]
+			&& relative_risks["very_high"] <= rank[2]) {
+
+			return rank[3];
+		}
+	}
+
+	return "Error";
 }
