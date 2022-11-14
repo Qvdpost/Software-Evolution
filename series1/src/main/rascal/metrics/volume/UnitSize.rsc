@@ -6,7 +6,7 @@ import lang::java::m3::AST;
 import lib::Common;
 import metrics::volume::LoC;
 import Map;
-
+import IO;
 // Get all methods of a Java project, based on project location
 public set[loc] getMethods(loc projectLocation) {
     M3 model = createM3FromMavenProject(projectLocation);
@@ -25,7 +25,7 @@ public map[loc, int] countMethodLoC(loc projectLocation){
     return methodSizes;
 }
 
-public str getUnitVolumeRiskProfile(loc project) {
+public tuple[map[str, num],str] getUnitVolumeRiskProfile(loc project) {
 
 	map[loc, int] unit_sizes = countMethodLoC(project);
     int nrOfMethods = size(unit_sizes);
@@ -53,7 +53,7 @@ public str getUnitVolumeRiskProfile(loc project) {
 			&& relative_risks["high"] <= rank[1]
 			&& relative_risks["very_high"] <= rank[2]) {
 
-			return rank[3];
+			return <relative_risks, rank[3]>;
 		}
 	}
 

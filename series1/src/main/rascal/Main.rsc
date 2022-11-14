@@ -1,7 +1,7 @@
 module Main
 
 import IO;
-
+import String;
 import metrics::volume::LoC;
 import metrics::volume::UnitSize;
 import metrics::complexity::Cyclomatic;
@@ -12,10 +12,14 @@ void main() {
     // loc project = |project://series1|;
 
     <lineCount, rating> = mainLoC(project);
-    println("UnitVolume rating is: <getUnitVolumeRiskProfile(project)>");
+    <ratingsMap, unitSizeRiskProfile> = getUnitVolumeRiskProfile(project);
+    str complexityRiskProfile = complexityRank(lineCount, project);
 
-    println("Lines of code in <project>: <lineCount> with a volume rating of: \'<rating>\'.");
+    println("\n");
+    println("Ratings of project: <project>");
+    println("------------------------------------");
 
-    println("The unit complexity rating for <project> is: \'<complexityRank(lineCount, project)>\'");
-
+    println(left("| Volume", 22) + left("| <rating>",5) + "| LoC: <lineCount>");
+    println(left("| Unit Size",22) + left("| <unitSizeRiskProfile>",5) + "| <ratingsMap>");
+    println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "|");
 }
