@@ -74,7 +74,7 @@ public map[loc, int] unitComplexity(loc projectLocation) {
 	return result;
 }
 
-str complexityRank(int lines_of_code, loc project) {
+public tuple[map[str, num],str] complexityRank(int lines_of_code, loc project) {
     map[str, real] risks = getRiskProfile();
 
 
@@ -103,7 +103,7 @@ str complexityRank(int lines_of_code, loc project) {
 			&& relative_risks["high"] <= rank[1]
 			&& relative_risks["very_high"] <= rank[2]) {
 
-			return rank[3];
+			return <relative_risks, rank[3]>;
 		}
 	}
 
