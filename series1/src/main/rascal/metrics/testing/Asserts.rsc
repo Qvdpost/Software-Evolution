@@ -22,3 +22,9 @@ public int countAsserts(list[Declaration] asts) {
     println(nrOfAsserts);
     return nrOfAsserts;
 }
+
+public void countMethodsInTests(M3 model) {
+    set[loc] methodSet = methods(model);
+    // Get TestFiles
+    // Check all methodNames if these are called in a methodCall
+}
