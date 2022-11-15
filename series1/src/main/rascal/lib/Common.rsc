@@ -19,3 +19,13 @@ public list[tuple[num, num, num, str]] getRankings() {
 		<100, 100, 100, "--">
 	];
 }
+
+public list[tuple[num, num, str]] getDuplicationRankings() {
+    return [
+        <0, 3, "++">,
+        <3, 5, "+">,
+        <5, 10, "0">,
+        <10, 20, "-">,
+        <20, 100, "--">
+    ];
+}

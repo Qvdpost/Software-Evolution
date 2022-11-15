@@ -2,6 +2,7 @@ module metrics::duplication::Duplicates
 
 import metrics::volume::LoC;
 import island::AST;
+import lib::Common;
 
 
 import IO;
@@ -112,6 +113,8 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
                     // Adds the new block of code to the exploded duplicate blocks
                     explodedInvertedDuplicates[srcFile][cover(pair)] = block;
 
+                    // TODO: Check of het mergen niet blokjes overslaat die ook een clone class kunnen opleveren. eg. index 2-3 samen.
+
                     // Filters values of merged sources from original duplicates
                     duplicates = filterValMap(duplicates, explodedInvertedDuplicates[srcFile][pair[0]], pair[0]);
                     duplicates = filterValMap(duplicates, explodedInvertedDuplicates[srcFile][pair[1]], pair[1]);
@@ -126,9 +129,11 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
     return duplicates;
 }
 
-void main() {
+tuple[real, real, str] main() {
     // loc project = |project://sampleJava|;
     loc project = |project://smallsql0.21_src|;
+
+    tuple[int count, str _] projectLoC = mainLoC(project);
 
     list[island::AST::Prog] asts = getIslandASTsFromProject(project);
 
@@ -142,7 +147,7 @@ void main() {
 
     map[str, set[loc]] duplicateBlocks = getDuplicates(duplicates, 0);
 
-    int duplicateLoC = 0;
+    real duplicateLoC = 0.0;
     for (clone <- duplicateBlocks) {
         println(duplicateBlocks[clone]);
         for (src <- duplicateBlocks[clone]) {
@@ -152,6 +157,18 @@ void main() {
 
     // TODO: Series 2: voor elke originele code class met nog maar 1 element -> zoek in backup van originele code class naar de andere dupolicates en herstel de code class
 
-    println("Totale duplicate lines of code: <duplicateLoC>");
 
+    real relDuplicateLoC = duplicateLoC / projectLoC.count * 100;
+
+    println("Totale duplicate lines of code: <duplicateLoC>");
+    println("Relative duplicate lines of code: <relDuplicateLoC>");
+
+    for (rank <- getDuplicationRankings()) {
+        if (relDuplicateLoC <= rank[1]) {
+            println("rank[2]");
+            return <duplicateLoC, relDuplicateLoC, rank[2]>;
+        }
+    }
+
+    return <0, 0, "error">;
 }

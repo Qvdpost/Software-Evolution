@@ -48,10 +48,6 @@ int cyclomaticComplexity(M3 ast) {
 		case \for(_, _, _, _): complexity += 1;
 		case \while(_, _): complexity += 1;
 		case \do(_, _): complexity += 1;
-		case \break(): complexity += 1;
-		case \break(_): complexity += 1;
-		case \continue(): complexity += 1;
-		case \continue(_): complexity += 1;
 		case \infix(_, op, _): {
 			if (op == "&&" || op == "||") complexity += 1;
 		}
