@@ -24,7 +24,7 @@ public tuple[map[str, num],str] getUnitVolumeRiskProfile(M3 model, loc project) 
 	map[loc, int] unit_sizes = countMethodLoC(model, project);
     int nrOfMethods = size(unit_sizes);
     map[str, real] riskProfile = getRiskProfile();
-	println(nrOfMethods);
+
 	for (unit <- unit_sizes) {
 
 		if (unit_sizes[unit] <= 30) {

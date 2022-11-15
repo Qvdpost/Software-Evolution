@@ -47,7 +47,7 @@ map[str, set[loc]] getBlocksOfN(map[str, set[loc]] occurrences, list[island::AST
 
         for (init <- [0 .. fileLoC - N + 1]) {
             block = slice(LoC, init, N);
-            occurrences = initOrIncrMap(occurrences, ("" | it + e | str e <- [ line.text | line <- block]), cover([line.src | line <- block]));
+            occurrences[("" | it + e | str e <- [ line.text | line <- block])] ? {cover([line.src | line <- block])} += cover([line.src | line <- block]);
         }
     }
     return occurrences;
@@ -118,7 +118,7 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
                     duplicates[explodedInvertedDuplicates[srcFile][pair[1]]] -= pair[1];
 
                     // Adds the new block to the original duplicates
-                    duplicates = initOrIncrMap(duplicates, block, cover(pair));
+                    duplicates[block] ? {cover(pair)} += cover(pair);
                     merged += 1;
                 }
             }
@@ -127,7 +127,7 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
     return duplicates;
 }
 
-tuple[int, int, str] duplicationRank(loc project) {
+tuple[int, real, str] duplicationRank(loc project) {
     // loc project = |project://sampleJava|;
     // loc project = |project://smallsql0.21_src|;
 
@@ -154,7 +154,7 @@ tuple[int, int, str] duplicationRank(loc project) {
 
     // TODO: Series 2: voor elke originele code class met nog maar 1 element -> zoek in backup van originele code class naar de andere dupolicates en herstel de code class
 
-    int relDuplicateLoC = percent(duplicateLoC, projectLoC.count);
+    real relDuplicateLoC = getPercentage(duplicateLoC, projectLoC.count);
 
     for (rank <- getDuplicationRankings()) {
         if (relDuplicateLoC <= rank[1]) {
