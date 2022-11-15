@@ -4,6 +4,8 @@ import IO;
 import List;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
+import lib::Common;
+import Set;
 
 
 public int checkMethodCall(str name) {
@@ -19,12 +21,21 @@ public int countAsserts(list[Declaration] asts) {
         case \methodCall(_,_, name,_): nrOfAsserts += checkMethodCall(name);
         case \methodCall(_,name,_): nrOfAsserts += checkMethodCall(name);
     }
-    println(nrOfAsserts);
+
     return nrOfAsserts;
 }
 
-public void countMethodsInTests(M3 model) {
-    set[loc] methodSet = methods(model);
-    // Get TestFiles
-    // Check all methodNames if these are called in a methodCall
+public real countMethodsInTests(loc project, M3 originalModel) {
+    set[loc] testFileSet = { file | file <- files(originalModel),  /Test*/ := file.file};
+    <model, testAst> = getFilesetASTs(project, testFileSet);
+
+    set[loc] allMethods = methods(originalModel);
+    set[loc] methodCallsInTests = {};
+
+    visit(testAst) {
+        case call: \methodCall(_,_,_,_): methodCallsInTests += call.decl;
+        case call: \methodCall(_,_,_): methodCallsInTests += call.decl;
+    }
+
+    return getPercentage(size(methodCallsInTests), size(allMethods));
 }
