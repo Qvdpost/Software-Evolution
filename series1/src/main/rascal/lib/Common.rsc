@@ -1,5 +1,8 @@
 module lib::Common
 
+import lang::java::m3::Core;
+import lang::java::m3::AST;
+
 public map[str, real] getRiskProfile() {
     return (
         "low": 0.0,
@@ -28,4 +31,11 @@ public list[tuple[num, num, str]] getDuplicationRankings() {
         <10, 20, "-">,
         <20, 100, "--">
     ];
+}
+
+public tuple[M3,list[Declaration]] getASTs(loc projectLocation) {
+    M3 model = createM3FromMavenProject(projectLocation);
+    list[Declaration] asts = [createAstFromFile(f, true)
+        | f <- files(model.containment), isCompilationUnit(f)];
+    return <model,asts>;
 }
