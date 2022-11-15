@@ -29,12 +29,15 @@ import metrics::volume::UnitSize;
  * - https://www.theserverside.com/feature/How-to-calculate-McCabe-cyclomatic-complexity-in-Java
  *
  */
-int cyclomaticComplexity(M3 ast) {
+int cyclomaticComplexity(loc method) {
+
+	fileAST = createAstFromFile(method, true);
+	methodAST = {d | /Declaration d := fileAST, d.decl == method};
 
 	int complexity = 1;
 	bool firstReturn = true;
 
-	visit(ast) {
+	visit(methodAST) {
 		case \return(_): {
 			if (!firstReturn) complexity += 1;
 			else firstReturn = false;
@@ -56,8 +59,6 @@ int cyclomaticComplexity(M3 ast) {
 		case \throw(_): complexity += 1;
 	}
 
-	println("<ast>: <complexity>");
-
 	return complexity;
 }
 
@@ -66,7 +67,7 @@ public map[loc, int] unitComplexity(M3 model) {
 	map[loc, int] result = ();
 
 	visit (methodSet) {
-        case currentMethod: loc _ :  result[currentMethod] = cyclomaticComplexity(createM3FromFile(currentMethod));
+        case currentMethod: loc _ :  result[currentMethod] = cyclomaticComplexity(currentMethod);
     }
 
 	return result;
