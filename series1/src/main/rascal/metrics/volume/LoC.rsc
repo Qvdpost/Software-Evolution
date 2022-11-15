@@ -28,10 +28,10 @@ public int countLoC(loc file) {
 }
 
 public list[island::AST::Prog] getIslandASTsFromProject(loc project) {
-    return getIslandASTsFromFiles([path | path <- {p | sp <- getPaths(project, lang), p <- find(sp, lang), isFile(p)}]);
+    return getIslandASTsFromFiles({path | path <- {p | sp <- getPaths(project, lang), p <- find(sp, lang), isFile(p)}});
 }
 
-public list[island::AST::Prog] getIslandASTsFromFiles(list[loc] files) {
+public list[island::AST::Prog] getIslandASTsFromFiles(set[loc] files) {
     return [getIslandASTsFromFile(path) | path <- files];
 }
 

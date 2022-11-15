@@ -38,7 +38,7 @@ public tuple[map[str, num],str] getUnitVolumeRiskProfile(M3 model, loc project) 
 		}
     }
 
-	map[str, num] relative_risks = (unit: (riskProfile[unit]/nrOfMethods) * 100.0 | unit <- riskProfile);
+	map[str, num] relative_risks = (unit: getPercentage(riskProfile[unit],nrOfMethods) | unit <- riskProfile);
 
     list[tuple[num, num, num, str]] rankings = getRankings();
 

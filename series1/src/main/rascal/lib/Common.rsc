@@ -51,9 +51,17 @@ public tuple[M3,list[Declaration]] getFilesetASTs(loc projectLocation, set[loc] 
 }
 
 public real getPercentage(int x, int y){
-    return precision((toReal(x) / toReal(y) * 100), 3);
+    return precision((toReal(x) / toReal(y) * 100), 4);
 }
 
 public real getPercentage(real x, real y){
-    return precision((x / y * 100), 3);
+    return precision((x / y * 100), 4);
+}
+
+public real getPercentage(int x, real y){
+    return precision((toReal(x) / y * 100), 4);
+}
+
+public real getPercentage(real x, int y){
+    return precision((x / toReal(y) * 100), 4);
 }
