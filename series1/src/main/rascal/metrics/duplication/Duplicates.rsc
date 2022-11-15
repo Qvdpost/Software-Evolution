@@ -129,9 +129,9 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
     return duplicates;
 }
 
-tuple[real, real, str] main() {
+tuple[real, real, str] duplicationRank(loc project) {
     // loc project = |project://sampleJava|;
-    loc project = |project://smallsql0.21_src|;
+    // loc project = |project://smallsql0.21_src|;
 
     tuple[int count, str _] projectLoC = mainLoC(project);
 

@@ -31,6 +31,7 @@ import metrics::volume::UnitSize;
  */
 int cyclomaticComplexity(loc method) {
 
+	// Note: rather inefficient. Maybe a map or use the original model to visit.
 	fileAST = createAstFromFile(method, true);
 	methodAST = {d | /Declaration d := fileAST, d.decl == method};
 
