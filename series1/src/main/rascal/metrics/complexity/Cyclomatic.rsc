@@ -95,7 +95,6 @@ public tuple[map[str, num],str] complexityRank(M3 model, int lines_of_code, loc 
 	}
 
 	map[str, num] relative_risks = (unit: (risks[unit]/lines_of_code) * 100 | unit <-risks);
-	println(relative_risks);
 
     list[tuple[num, num, num, str]] rankings = getRankings();
 

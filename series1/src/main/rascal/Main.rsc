@@ -12,12 +12,7 @@ import metrics::testing::Asserts;
 import metrics::maintainability::Aggregations;
 import metrics::duplication::Duplicates;
 
-
-void main() {
-    loc project = |project://smallsql0.21_src|;
-    // loc project = |project://hsqldb-2.3.1|;
-    // loc project = |project://sampleJava|;
-    // loc project = |project://series1|;
+void analyseProject(loc project) {
     <model, asts> = getASTs(project);
 
     <lineCount, rating> = mainLoC(project);
@@ -44,4 +39,10 @@ void main() {
     println(left("| Changeability", 22) + left("| <aggregateChangeability(complexityRiskProfile, duplicationProfile)>", 5));
     println(left("| Stability", 22) + left("| <aggregateStability("o")>", 5));
     println(left("| Testability", 22) + left("| <aggregateTestability(complexityRiskProfile, unitSizeRiskProfile, "o")>", 5));
+}
+
+void main() {
+    analyseProject(|project://sampleJava|);
+    analyseProject(|project://smallsql0.21_src|);
+    analyseProject(|project://hsqldb-2.3.1|);
 }

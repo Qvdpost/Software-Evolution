@@ -4,7 +4,6 @@ import metrics::volume::LoC;
 import island::AST;
 import lib::Common;
 
-
 import IO;
 import List;
 import Set;
@@ -23,7 +22,6 @@ map[str, set[loc]] filterValMap(map[str, set[loc]] mapping, str key, loc val) {
 
 	return mapping;
 }
-
 
 list[Decls] getNLoC(list[Decls] LoC, int init, int step) {
     return slice(LoC, init, step);
@@ -48,8 +46,8 @@ map[str, set[loc]] getBlocksOfN(map[str, set[loc]] occurrences, list[island::AST
         }
 
         for (init <- [0 .. fileLoC - N + 1]) {
-            block = getNLoC(LoC, init, N);
-            occurrences = initOrIncrMap(occurrences, concatLoC(block), coverBlock(block));
+            block = slice(LoC, init, N);
+            occurrences = initOrIncrMap(occurrences, ("" | it + e | str e <- [ line.text | line <- block]), cover([line.src | line <- block]));
         }
     }
     return occurrences;
@@ -108,7 +106,7 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
                     // Refresh the sources to reflect merging of a pair of locs
                     srcs = srcs[0 .. init] + [cover(pair)] + srcs[init + 2 .. ];
 
-                    str block = concatLoC(getLoC(getIslandASTsFromFile(cover(pair))));
+                    str block = ("" | it + e | str e <- [ line.text | line <- getLoC(getIslandASTsFromFile(cover(pair)))]);
 
                     // Adds the new block of code to the exploded duplicate blocks
                     explodedInvertedDuplicates[srcFile][cover(pair)] = block;
@@ -116,8 +114,8 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
                     // TODO: Check of het mergen niet blokjes overslaat die ook een clone class kunnen opleveren. eg. index 2-3 samen.
 
                     // Filters values of merged sources from original duplicates
-                    duplicates = filterValMap(duplicates, explodedInvertedDuplicates[srcFile][pair[0]], pair[0]);
-                    duplicates = filterValMap(duplicates, explodedInvertedDuplicates[srcFile][pair[1]], pair[1]);
+                    duplicates[explodedInvertedDuplicates[srcFile][pair[0]]] -= pair[0];
+                    duplicates[explodedInvertedDuplicates[srcFile][pair[1]]] -= pair[1];
 
                     // Adds the new block to the original duplicates
                     duplicates = initOrIncrMap(duplicates, block, cover(pair));
@@ -129,7 +127,7 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
     return duplicates;
 }
 
-tuple[real, real, str] duplicationRank(loc project) {
+tuple[int, int, str] duplicationRank(loc project) {
     // loc project = |project://sampleJava|;
     // loc project = |project://smallsql0.21_src|;
 
@@ -147,9 +145,8 @@ tuple[real, real, str] duplicationRank(loc project) {
 
     map[str, set[loc]] duplicateBlocks = getDuplicates(duplicates, 0);
 
-    real duplicateLoC = 0.0;
+    int duplicateLoC = 0;
     for (clone <- duplicateBlocks) {
-        println(duplicateBlocks[clone]);
         for (src <- duplicateBlocks[clone]) {
             duplicateLoC += countLoC(src);
         }
@@ -157,15 +154,10 @@ tuple[real, real, str] duplicationRank(loc project) {
 
     // TODO: Series 2: voor elke originele code class met nog maar 1 element -> zoek in backup van originele code class naar de andere dupolicates en herstel de code class
 
-
-    real relDuplicateLoC = duplicateLoC / projectLoC.count * 100;
-
-    println("Totale duplicate lines of code: <duplicateLoC>");
-    println("Relative duplicate lines of code: <relDuplicateLoC>");
+    int relDuplicateLoC = percent(duplicateLoC, projectLoC.count);
 
     for (rank <- getDuplicationRankings()) {
         if (relDuplicateLoC <= rank[1]) {
-            println("rank[2]");
             return <duplicateLoC, relDuplicateLoC, rank[2]>;
         }
     }
