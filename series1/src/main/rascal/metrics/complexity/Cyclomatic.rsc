@@ -29,16 +29,16 @@ import metrics::volume::UnitSize;
  * - https://www.theserverside.com/feature/How-to-calculate-McCabe-cyclomatic-complexity-in-Java
  *
  */
-int cyclomaticComplexity(loc method) {
+int cyclomaticComplexity(Declaration ast) {
 
-	// Note: rather inefficient. Maybe a map or use the original model to visit.
-	fileAST = createAstFromFile(method, true);
-	methodAST = {d | /Declaration d := fileAST, d.decl == method};
+	// Note: rather inefficient. Maybe use the original model to visit.
+	// fileAST = createAstFromFile(method, true);
+	// methodAST = {d | /Declaration d := fileAST, d.decl == method};
 
 	int complexity = 1;
 	bool firstReturn = true;
 
-	visit(methodAST) {
+	visit(ast) {
 		case \return(_): {
 			if (!firstReturn) complexity += 1;
 			else firstReturn = false;
@@ -63,24 +63,24 @@ int cyclomaticComplexity(loc method) {
 	return complexity;
 }
 
-public map[loc, int] unitComplexity(M3 model) {
-	set[loc] methodSet = methods(model);
+public map[loc, int] unitComplexity(list[Declaration] asts) {
 	map[loc, int] result = ();
 
-	visit (methodSet) {
-        case currentMethod: loc _ :  result[currentMethod] = cyclomaticComplexity(currentMethod);
-    }
+	visit(asts) {
+		case decl: \method(Type _, _, _, _, _): result[decl.decl] = cyclomaticComplexity(decl);
+		case decl: \method(Type _, _, _, _): result[decl.decl] = cyclomaticComplexity(decl);
+	}
 
 	return result;
 }
 
-public tuple[map[str, num],str] complexityRank(M3 model, int lines_of_code, loc project) {
+public tuple[map[str, num],str] complexityRank(list[Declaration] asts, int lines_of_code, loc project) {
     map[str, real] risks = getRiskProfile();
 
 
-	map[loc, int] unit_sizes = countMethodLoC(model, project);
+	map[loc, int] unit_sizes = countMethodLoC(asts, project);
 
-	map[loc, int] unit_complexities = unitComplexity(model);
+	map[loc, int] unit_complexities = unitComplexity(asts);
 
 	for (unit <- unit_complexities) {
 		if (unit_complexities[unit] <= 10) {

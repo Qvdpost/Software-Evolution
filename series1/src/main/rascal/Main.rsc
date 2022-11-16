@@ -22,30 +22,30 @@ void analyseProject(loc project) {
     <lineCount, rating> = mainLoC(project);
     println(left("| Volume", 22) + left("| <rating>",5) + "| LoC: <lineCount>");
 
-    // <ratingsMap, unitSizeRiskProfile> = getUnitVolumeRiskProfile(model, project);
-    // println(left("| Unit Size",22) + left("| <unitSizeRiskProfile>",5) + "| <ratingsMap>");
+    <ratingsMap, unitSizeRiskProfile> = getUnitVolumeRiskProfile(asts, project);
+    println(left("| Unit Size",22) + left("| <unitSizeRiskProfile>",5) + "| <ratingsMap>");
 
-    // <complexityMap, complexityRiskProfile> = complexityRank(model, lineCount, project);
-    // println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "| <complexityMap>");
+    <complexityMap, complexityRiskProfile> = complexityRank(asts, lineCount, project);
+    println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "| <complexityMap>");
 
     <duplication, relativeDuplication, duplicationProfile> = duplicationRank(project);
     println(left("| Duplication", 22) + left("| <duplicationProfile>",5) + "| Dups: <duplication>; <relativeDuplication>%");
 
-    // real methodsTestedPercentage = countMethodsInTests(project, model);
-    // println(left("| Unit testing", 22) + left("| <methodsTestedPercentage>",5) + "|");
+    real methodsTestedPercentage = countMethodsInTests(project, model);
+    println(left("| Unit testing", 22) + left("| <methodsTestedPercentage>",5) + "|");
 
 
     println("\n");
     println("Maintainability  of: <project>");
     println("------------------------------------");
-    // println(left("| Analysability", 22) + left("| <aggregateAnalysability(rating, duplicationProfile, unitSizeRiskProfile, "o")>", 5));
-    // println(left("| Changeability", 22) + left("| <aggregateChangeability(complexityRiskProfile, duplicationProfile)>", 5));
-    // println(left("| Stability", 22) + left("| <aggregateStability("o")>", 5));
-    // println(left("| Testability", 22) + left("| <aggregateTestability(complexityRiskProfile, unitSizeRiskProfile, "o")>", 5));
+    println(left("| Analysability", 22) + left("| <aggregateAnalysability(rating, duplicationProfile, unitSizeRiskProfile, "o")>", 5));
+    println(left("| Changeability", 22) + left("| <aggregateChangeability(complexityRiskProfile, duplicationProfile)>", 5));
+    println(left("| Stability", 22) + left("| <aggregateStability("o")>", 5));
+    println(left("| Testability", 22) + left("| <aggregateTestability(complexityRiskProfile, unitSizeRiskProfile, "o")>", 5));
 }
 
 void main() {
     analyseProject(|project://sampleJava|);
     analyseProject(|project://smallsql0.21_src|);
-    analyseProject(|project://hsqldb-2.3.1|);
+    // analyseProject(|project://hsqldb-2.3.1|);
 }

@@ -7,21 +7,26 @@ import lib::Common;
 import metrics::volume::LoC;
 import Map;
 import IO;
+
 // For each method count the lines of codes
-public map[loc, int] countMethodLoC(M3 model, loc projectLocation){
-    set[loc] methods = methods(model);
+public map[loc, int] countMethodLoC(list[Declaration] asts, loc projectLocation){
     map[loc, int] methodSizes = ();
 
     visit (methods) {
         case currentMethod: loc _ :  methodSizes[currentMethod] = countLoC(getIslandASTsFromFile(currentMethod));
     }
 
+	visit(asts) {
+		case decl: \method(Type _, _, _, _, _): methodSizes[decl.decl] = countLoC(getIslandASTsFromFile(decl.decl));
+		case decl: \method(Type _, _, _, _): methodSizes[decl.decl] = countLoC(getIslandASTsFromFile(decl.decl));
+	}
+
     return methodSizes;
 }
 
-public tuple[map[str, num],str] getUnitVolumeRiskProfile(M3 model, loc project) {
+public tuple[map[str, num],str] getUnitVolumeRiskProfile(list[Declaration] asts, loc project) {
 
-	map[loc, int] unit_sizes = countMethodLoC(model, project);
+	map[loc, int] unit_sizes = countMethodLoC(asts, project);
     int nrOfMethods = size(unit_sizes);
     map[str, real] riskProfile = getRiskProfile();
 
