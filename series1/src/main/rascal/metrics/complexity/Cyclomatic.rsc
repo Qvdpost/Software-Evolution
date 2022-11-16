@@ -94,7 +94,7 @@ public tuple[map[str, num],str] complexityRank(list[Declaration] asts, int lines
 		}
 	}
 
-	map[str, num] relative_risks = (unit: (risks[unit]/lines_of_code) * 100 | unit <-risks);
+	map[str, num] relative_risks = (unit: getPercentage(risks[unit],lines_of_code) | unit <-risks);
 
     list[tuple[num, num, num, str]] rankings = getRankings();
 

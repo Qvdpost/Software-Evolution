@@ -28,8 +28,8 @@ void analyseProject(loc project) {
     <complexityMap, complexityRiskProfile> = complexityRank(asts, lineCount, project);
     println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "| <complexityMap>");
 
-    <duplication, relativeDuplication, duplicationProfile> = duplicationRank(project);
-    println(left("| Duplication", 22) + left("| <duplicationProfile>",5) + "| Dups: <duplication>; <relativeDuplication>%");
+    // <duplication, relativeDuplication, duplicationProfile> = duplicationRank(project);
+    // println(left("| Duplication", 22) + left("| <duplicationProfile>",5) + "| Dups: <duplication>; <relativeDuplication>%");
 
     real methodsTestedPercentage = countMethodsInTests(project, model);
     println(left("| Unit testing", 22) + left("| <methodsTestedPercentage>",5) + "|");
