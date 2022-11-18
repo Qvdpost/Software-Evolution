@@ -2,7 +2,7 @@ package main;
 
 
 public class Calculate {
-    Public Calculate(){}
+    public Calculate(){}
 
     public Integer minus(Integer x, Integer y) {
         return  x - y;
@@ -29,11 +29,9 @@ public class Calculate {
 */
     public void main(String [] args) {
         System.out.println("Starting main");
-        Test x = new /*comment */
-        Test();
-        Integer test = x.add(5,6);
-        /* */
-         /* */System.out.println("Test: " + test.toString());
+
+        Integer test = 10;
+        /* */System.out.println("Test: " + test.toString());
 
         for(Integer iep = 0; iep < 10; iep++) { /* */
             System.out.println(iep.toString());
