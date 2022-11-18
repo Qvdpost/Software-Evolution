@@ -9,7 +9,7 @@ import Map;
 import IO;
 
 // For each method count the lines of codes
-public map[loc, int] countMethodLoC(list[Declaration] asts, loc projectLocation){
+public map[loc, int] countMethodLoC(list[Declaration] asts){
     map[loc, int] methodSizes = ();
 
     visit (methods) {
@@ -24,9 +24,9 @@ public map[loc, int] countMethodLoC(list[Declaration] asts, loc projectLocation)
     return methodSizes;
 }
 
-public tuple[map[str, num],str] getUnitVolumeRiskProfile(list[Declaration] asts, loc project) {
+public tuple[map[str, num],str] getUnitVolumeRiskProfile(list[Declaration] asts) {
 
-	map[loc, int] unit_sizes = countMethodLoC(asts, project);
+	map[loc, int] unit_sizes = countMethodLoC(asts);
     int nrOfMethods = size(unit_sizes);
     map[str, real] riskProfile = getRiskProfile();
 

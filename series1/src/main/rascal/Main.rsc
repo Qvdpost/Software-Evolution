@@ -22,10 +22,10 @@ void analyseProject(loc project) {
     <lineCount, rating> = mainLoC(project);
     println(left("| Volume", 22) + left("| <rating>",5) + "| LoC: <lineCount>");
 
-    <ratingsMap, unitSizeRiskProfile> = getUnitVolumeRiskProfile(asts, project);
+    <ratingsMap, unitSizeRiskProfile> = getUnitVolumeRiskProfile(asts);
     println(left("| Unit Size",22) + left("| <unitSizeRiskProfile>",5) + "| <ratingsMap>");
 
-    <complexityMap, complexityRiskProfile> = complexityRank(asts, lineCount, project);
+    <complexityMap, complexityRiskProfile> = complexityRank(asts, lineCount);
     println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "| <complexityMap>");
 
     // <duplication, relativeDuplication, duplicationProfile> = duplicationRank(project);
