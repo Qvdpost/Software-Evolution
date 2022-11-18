@@ -23,10 +23,10 @@ void analyseProject(loc project) {
     println(left("| Volume", 22) + left("| <rating>",5) + "| LoC: <lineCount>");
 
     <ratingsMap, unitSizeRiskProfile> = getUnitVolumeRiskProfile(asts);
-    println(left("| Unit Size",22) + left("| <unitSizeRiskProfile>",5) + "| <ratingsMap>");
+    println(left("| Unit Size",22) + left("| <unitSizeRiskProfile>",5) + "| <prettyPrintPercentageMap(ratingsMap)>");
 
     <complexityMap, complexityRiskProfile> = complexityRank(asts, lineCount);
-    println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "| <complexityMap>");
+    println(left("| Complexity per unit", 22) + left("| <complexityRiskProfile>",5) + "| <prettyPrintPercentageMap(complexityMap)>");
 
     <duplication, relativeDuplication, duplicationProfile> = duplicationRank(project);
     println(left("| Duplication", 22) + left("| <duplicationProfile>",5) + "| Dups: <duplication>; <relativeDuplication>%");
@@ -46,6 +46,6 @@ void analyseProject(loc project) {
 
 void main() {
     analyseProject(|project://sampleJava|);
-    analyseProject(|project://smallsql0.21_src|);
+    // analyseProject(|project://smallsql0.21_src|);
     // analyseProject(|project://hsqldb-2.3.1|);
 }
