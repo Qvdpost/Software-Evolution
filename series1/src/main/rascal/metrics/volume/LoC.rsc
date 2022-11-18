@@ -66,7 +66,7 @@ private int getFunctionPointsLoCperYear(){
 }
 
 private str calculateVolumeRating(int linesOfCode) {
-    int projectScore = linesOfCode / getFunctionPointsLoCperYear;
+    int projectScore = linesOfCode / getFunctionPointsLoCperYear();
 
     return  projectScore <= 8   ? "++" :
             projectScore <= 30  ? "+" :
