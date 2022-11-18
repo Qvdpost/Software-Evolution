@@ -1,16 +1,20 @@
 // package myjavacode;
+package test;
+import main.Calculate;
 
-public class Test {
+public class TestIng {
+    TestIng(){}
 
-    public static Integer add(Integer x, Integer y) {
+    private Integer add(Integer x, Integer y) {
         return x + y;
     }
 
-    public static void main(String
+
+    public void main(String
     [] args) {
         System.out.println("Starting main");
 
-        Integer test = add(5,6);
+        Integer test = this.add(5,6);
         /* */
          /* */System.out.println("Test: " + test.toString());
 
@@ -20,6 +24,8 @@ public class Test {
                 System.out.println(iep.toString());
             }
         }
+        System.out.println("Starting main");
 
-    }
+
+        }
 }

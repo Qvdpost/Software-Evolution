@@ -12,10 +12,6 @@ import IO;
 public map[loc, int] countMethodLoC(list[Declaration] asts){
     map[loc, int] methodSizes = ();
 
-    visit (methods) {
-        case currentMethod: loc _ :  methodSizes[currentMethod] = countLoC(getIslandASTsFromFile(currentMethod));
-    }
-
 	visit(asts) {
 		case decl: \method(Type _, _, _, _, _): methodSizes[decl.decl] = countLoC(getIslandASTsFromFile(decl.decl));
 		case decl: \method(Type _, _, _, _): methodSizes[decl.decl] = countLoC(getIslandASTsFromFile(decl.decl));
