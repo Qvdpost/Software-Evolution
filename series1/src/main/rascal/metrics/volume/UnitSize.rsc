@@ -28,7 +28,7 @@ public tuple[map[str, num],str] getUnitVolumeRiskProfile(list[Declaration] asts)
 
 	for (unit <- unit_sizes) {
 
-		if (unit_sizes[unit] <= 30) {
+		if (unit_sizes[unit] <= 20) {
 			riskProfile["low"] += 1.0;
         } else if (unit_sizes[unit] <= 30) {
 			riskProfile["moderate"] += 1.0;
