@@ -58,8 +58,15 @@ list[Decls] getLoC(island::AST::Prog prog) {
 // This is slightly different from the table in the scientific paper.
 // There a MY calculatation is done which equates to somewhere between
 // 8000 - 8250 LoC per year.
+private int getFunctionPointsLoCperYear(){
+    int functionPointsJava = (15 * 12);
+    int statementsPerFp = 53;
+
+    return functionPointsJava * statementsPerFp;
+}
+
 private str calculateVolumeRating(int linesOfCode) {
-    int projectScore = linesOfCode / 9540;
+    int projectScore = linesOfCode / getFunctionPointsLoCperYear;
 
     return  projectScore <= 8   ? "++" :
             projectScore <= 30  ? "+" :
