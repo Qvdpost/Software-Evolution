@@ -35,6 +35,16 @@ public list[tuple[num, num, str]] getDuplicationRankings() {
     ];
 }
 
+public list[tuple[num, num, str]] getUnitTestCoverageRankings() {
+    return [
+        <95, 100, "++">,
+        <80, 95, "+">,
+        <60, 80, "0">,
+        <20, 60, "-">,
+        <0, 20, "--">
+    ];
+}
+
 public tuple[M3,list[Declaration]] getASTs(loc projectLocation) {
     M3 model = createM3FromMavenProject(projectLocation);
     list[Declaration] asts = [createAstFromFile(f, true)

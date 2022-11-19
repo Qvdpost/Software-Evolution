@@ -26,7 +26,7 @@ public int countAsserts(list[Declaration] asts) {
     return nrOfAsserts;
 }
 
-public real countMethodsInTests(loc project, M3 originalModel, list[Declaration] asts) {
+public tuple[real, str] countMethodsInTests(M3 originalModel, list[Declaration] asts) {
     set[str] testFileSet = { file.path | file <- files(originalModel),  /Test*/ := file.file};
 
     map[str, int] methodCalls = ();
@@ -67,7 +67,13 @@ public real countMethodsInTests(loc project, M3 originalModel, list[Declaration]
         }
     }
 
-    println(methodCalls - methodCallsInTest);
+    real coverage = getPercentage(size(methodCallsInTest), size(methodCalls));
 
-    return getPercentage(size(methodCallsInTest), size(methodCalls));
+    for (rank <- getUnitTestCoverageRankings()) {
+        if (coverage >= rank[0]) {
+            return <getPercentage(size(methodCallsInTest), size(methodCalls)), rank[2]>;
+        }
+    }
+
+    return <0, "error">;
 }
