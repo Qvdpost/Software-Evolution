@@ -1,28 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<projectDescription>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.rascalmpl</groupId>
+	<artifactId>sampleJava</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>sampleJava</name>
-	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-	</buildSpec>
-	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
-	</natures>
-	<filteredResources>
-		<filter>
-			<id>1667216217262</id>
-			<name></name>
-			<type>30</type>
-			<matcher>
-				<id>org.eclipse.core.resources.regexFilterMatcher</id>
-				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
-			</matcher>
-		</filter>
-	</filteredResources>
-</projectDescription>
+
+	<properties>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   	<java.version>11</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+	<pluginManagement>
+	<plugins>
+	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<version>3.8.0</version>
+		<configuration>
+			<source>11</source>  <!-- same as <java.version> -->
+			<target>11</target>    <!-- same as <java.version> -->
+		</configuration>
+	</plugin>
+	</plugins>
+	</pluginManagement>
+	</build>
+</project>

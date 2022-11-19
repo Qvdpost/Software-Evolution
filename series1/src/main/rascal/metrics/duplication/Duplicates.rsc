@@ -127,11 +127,9 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
     return duplicates;
 }
 
-tuple[int, real, str] duplicationRank(loc project) {
+tuple[int, real, str] duplicationRank(loc project, int lineCount) {
     // loc project = |project://sampleJava|;
     // loc project = |project://smallsql0.21_src|;
-
-    tuple[int count, str _] projectLoC = mainLoC(project);
 
     list[island::AST::Prog] asts = getIslandASTsFromProject(project);
 
@@ -154,7 +152,7 @@ tuple[int, real, str] duplicationRank(loc project) {
 
     // TODO: Series 2: voor elke originele code class met nog maar 1 element -> zoek in backup van originele code class naar de andere dupolicates en herstel de code class
 
-    real relDuplicateLoC = getPercentage(duplicateLoC, projectLoC.count);
+    real relDuplicateLoC = getPercentage(duplicateLoC, lineCount);
 
     for (rank <- getDuplicationRankings()) {
         if (relDuplicateLoC <= rank[1]) {

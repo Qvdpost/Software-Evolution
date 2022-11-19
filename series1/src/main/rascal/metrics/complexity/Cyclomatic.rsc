@@ -74,11 +74,11 @@ public map[loc, int] unitComplexity(list[Declaration] asts) {
 	return result;
 }
 
-public tuple[map[str, num],str] complexityRank(list[Declaration] asts, int lines_of_code, loc project) {
+public tuple[map[str, num],str] complexityRank(list[Declaration] asts, int lines_of_code) {
     map[str, real] risks = getRiskProfile();
 
 
-	map[loc, int] unit_sizes = countMethodLoC(asts, project);
+	map[loc, int] unit_sizes = countMethodLoC(asts);
 
 	map[loc, int] unit_complexities = unitComplexity(asts);
 

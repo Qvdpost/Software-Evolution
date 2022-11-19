@@ -2,6 +2,7 @@ module metrics::testing::Asserts
 
 import IO;
 import List;
+import Map;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
@@ -25,17 +26,48 @@ public int countAsserts(list[Declaration] asts) {
     return nrOfAsserts;
 }
 
-public real countMethodsInTests(loc project, M3 originalModel) {
-    set[loc] testFileSet = { file | file <- files(originalModel),  /Test*/ := file.file};
-    <model, testAst> = getFilesetASTs(project, testFileSet);
+public real countMethodsInTests(loc project, M3 originalModel, list[Declaration] asts) {
+    set[str] testFileSet = { file.path | file <- files(originalModel),  /Test*/ := file.file};
 
-    set[loc] allMethods = methods(originalModel);
-    set[loc] methodCallsInTests = {};
+    map[str, int] methodCalls = ();
 
-    visit(testAst) {
-        case call: \methodCall(_,_,_,_): methodCallsInTests += call.decl;
-        case call: \methodCall(_,_,_): methodCallsInTests += call.decl;
+
+    visit(asts) {
+		case decl: \method(Type _, name, _, _, _): {
+            if (decl.src.path notin testFileSet) {
+                methodCalls[decl.src.file + "." + name] = 0;
+            }
+        }
+        case decl: \method(Type _, name, _, _): {
+            if (decl.src.path notin testFileSet) {
+                methodCalls[decl.src.file+"."+name] = 0;
+            }
+        }
+	}
+
+
+    visit(asts) {
+        case call: \methodCall(_, name:\simpleName(_), methodName,_): {
+            if (call.src.path in testFileSet && name.typ != unresolved() && name.typ.decl?) {
+                methodCalls[name.typ.decl.file + ".java." + methodName] ? 0 += 1;
+            }
+        }
+        case call: \methodCall(_, methodName, _): {
+            if (call.src.path in testFileSet && call.typ != unresolved() && call.typ.decl?) {
+                methodCalls[call.typ.decl.file + ".java." + methodName] ? 0 += 1;
+            }
+        }
     }
 
-    return getPercentage(size(methodCallsInTests), size(allMethods));
+    map[str, int] methodCallsInTest = ();
+
+    for (methodCall <- methodCalls) {
+        if (methodCalls[methodCall] > 0) {
+            methodCallsInTest[methodCall] = methodCalls[methodCall];
+        }
+    }
+
+    println(methodCalls - methodCallsInTest);
+
+    return getPercentage(size(methodCallsInTest), size(methodCalls));
 }

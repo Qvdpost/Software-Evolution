@@ -3,6 +3,7 @@ module lib::Common
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import util::Math;
+import IO;
 
 public map[str, real] getRiskProfile() {
     return (
@@ -64,4 +65,12 @@ public real getPercentage(int x, real y){
 
 public real getPercentage(real x, int y){
     return precision((x / toReal(y) * 100), 4);
+}
+
+public str prettyPrintPercentageMap(map[str, num] printMap) {
+    str S = "";
+    for (key <- printMap) {
+        S += "<key>: <printMap[key]>%, ";
+    }
+    return S;
 }
