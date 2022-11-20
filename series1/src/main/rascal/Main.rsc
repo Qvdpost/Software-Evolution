@@ -31,8 +31,9 @@ void analyseProject(loc project) {
     <duplication, relativeDuplication, duplicationProfile> = duplicationRank(project, lineCount);
     println(left("| Duplication", 22) + left("| <duplicationProfile>",5) + "| Dups: <duplication>; <relativeDuplication>%");
 
-    <methodsTestedPercentage, coverageProfile> = countMethodsInTests(model, asts);
-    println(left("| Unit testing", 22) + left("| <coverageProfile>",5) + "| Coverage: <methodsTestedPercentage>%");
+    <methodsTestedPercentage, coverageProfile, nrOfAsserts, assertProfile, methodCallsInTest> = countMethodsInTests(model, asts);
+    println(left("| Unit testing", 22) + left("| <coverageProfile>",5) + "| Coverage: <methodsTestedPercentage>%, Nr. of methods called from tests: <methodCallsInTest>");
+    println(left("| Asserts", 22) + left("| <assertProfile>",5) + "| Nr. of assert statements: <nrOfAsserts>");
 
 
     println("\n");
@@ -46,6 +47,6 @@ void analyseProject(loc project) {
 
 void main() {
     analyseProject(|project://sampleJava|);
-    // analyseProject(|project://smallsql0.21_src|);
+    analyseProject(|project://smallsql0.21_src|);
     // analyseProject(|project://hsqldb-2.3.1|);
 }

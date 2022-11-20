@@ -11,7 +11,7 @@ public class MyTest {
 
     public MyTest(){}
 
-    private  Integer mult(Integer x, Integer y) {
+    private  Integer multo(Integer x, Integer y) {
         return x * y;
     }
 
@@ -22,7 +22,12 @@ public class MyTest {
         Integer a = 10;
         Integer b = 4;
         Integer c = 6;
+        Integer d = 40;
         Integer z = x.minus(a, b);
+        Integer zz = this.multo(a, b);
+
         assertEquals(z,c);
+        assertEquals(zz,d);
+
     }
 }

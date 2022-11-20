@@ -3,7 +3,6 @@ module lib::Common
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import util::Math;
-import IO;
 
 public map[str, real] getRiskProfile() {
     return (

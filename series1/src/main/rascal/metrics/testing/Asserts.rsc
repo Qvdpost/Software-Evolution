@@ -1,13 +1,10 @@
 module metrics::testing::Asserts
 
-import IO;
 import List;
 import Map;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
-import Set;
-
 
 public int checkMethodCall(str name) {
     if (/assert*/ := name){
@@ -26,12 +23,13 @@ public int countAsserts(list[Declaration] asts) {
     return nrOfAsserts;
 }
 
-public tuple[real, str] countMethodsInTests(M3 originalModel, list[Declaration] asts) {
+public tuple[real, str, int, str, int] countMethodsInTests(M3 originalModel, list[Declaration] asts) {
     set[str] testFileSet = { file.path | file <- files(originalModel),  /Test*/ := file.file};
 
     map[str, int] methodCalls = ();
 
 
+    // Get all methods declared outside of test files.
     visit(asts) {
 		case decl: \method(Type _, name, _, _, _): {
             if (decl.src.path notin testFileSet) {
@@ -45,7 +43,8 @@ public tuple[real, str] countMethodsInTests(M3 originalModel, list[Declaration] 
         }
 	}
 
-
+    // Check all testfiles, see which methods are being called from which the method declaration
+    // is outside of the test directory.
     visit(asts) {
         case call: \methodCall(_, name:\simpleName(_), methodName,_): {
             if (call.src.path in testFileSet && name.typ != unresolved() && name.typ.decl?) {
@@ -61,6 +60,7 @@ public tuple[real, str] countMethodsInTests(M3 originalModel, list[Declaration] 
 
     map[str, int] methodCallsInTest = ();
 
+    // Filter out methods that are not being called
     for (methodCall <- methodCalls) {
         if (methodCalls[methodCall] > 0) {
             methodCallsInTest[methodCall] = methodCalls[methodCall];
@@ -68,12 +68,21 @@ public tuple[real, str] countMethodsInTests(M3 originalModel, list[Declaration] 
     }
 
     real coverage = getPercentage(size(methodCallsInTest), size(methodCalls));
+    int nrOfAsserts = countAsserts(asts);
+    real assertPercentage = getPercentage(nrOfAsserts, size(methodCallsInTest));
+    str assertRanking = "error";
 
     for (rank <- getUnitTestCoverageRankings()) {
-        if (coverage >= rank[0]) {
-            return <getPercentage(size(methodCallsInTest), size(methodCalls)), rank[2]>;
+        if (assertPercentage >= rank[0]) {
+            assertRanking = rank[2];
+            break;
         }
     }
 
-    return <0, "error">;
+    for (rank <- getUnitTestCoverageRankings()) {
+        if (coverage >= rank[0]) {
+            return <getPercentage(size(methodCallsInTest), size(methodCalls)), rank[2], nrOfAsserts, assertRanking, size(methodCallsInTest)>;
+        }
+    }
+    return <0.0, "error", 0, "error", 0>;
 }
