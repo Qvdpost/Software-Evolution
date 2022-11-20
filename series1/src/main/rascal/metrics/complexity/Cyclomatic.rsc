@@ -67,8 +67,8 @@ public map[loc, int] unitComplexity(list[Declaration] asts) {
 	map[loc, int] result = ();
 
 	visit(asts) {
-		case decl: \method(Type _, _, _, _, _): result[decl.decl] = cyclomaticComplexity(decl);
-		case decl: \method(Type _, _, _, _): result[decl.decl] = cyclomaticComplexity(decl);
+		case decl: \method(Type _, _, _, _, _): result[decl.src] = cyclomaticComplexity(decl);
+		case decl: \method(Type _, _, _, _): result[decl.src] = cyclomaticComplexity(decl);
 	}
 
 	return result;

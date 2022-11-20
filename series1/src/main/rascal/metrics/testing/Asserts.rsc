@@ -75,5 +75,5 @@ public tuple[real, str] countMethodsInTests(M3 originalModel, list[Declaration] 
         }
     }
 
-    return <0, "error">;
+    return <0.0, "error">;
 }

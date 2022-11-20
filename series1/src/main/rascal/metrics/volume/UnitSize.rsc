@@ -13,8 +13,12 @@ public map[loc, int] countMethodLoC(list[Declaration] asts){
     map[loc, int] methodSizes = ();
 
 	visit(asts) {
-		case decl: \method(Type _, _, _, _, _): methodSizes[decl.decl] = countLoC(getIslandASTsFromFile(decl.decl));
-		case decl: \method(Type _, _, _, _): methodSizes[decl.decl] = countLoC(getIslandASTsFromFile(decl.decl));
+		case decl: \method(Type _, _, _, _, _): {
+			methodSizes[decl.src] = countLoC(getIslandASTsFromFile(decl.src));
+		}
+		case decl: \method(Type _, _, _, _): {
+			methodSizes[decl.src] = countLoC(getIslandASTsFromFile(decl.src));
+		}
 	}
 
     return methodSizes;

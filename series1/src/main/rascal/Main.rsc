@@ -47,5 +47,5 @@ void analyseProject(loc project) {
 void main() {
     analyseProject(|project://sampleJava|);
     // analyseProject(|project://smallsql0.21_src|);
-    // analyseProject(|project://hsqldb-2.3.1|);
+    analyseProject(|project://hsqldb-2.3.1|);
 }
