@@ -41,12 +41,12 @@ void analyseProject(loc project) {
     println("------------------------------------");
     println(left("| Analysability", 22) + left("| <aggregateAnalysability(rating, duplicationProfile, unitSizeRiskProfile, coverageProfile)>", 5));
     println(left("| Changeability", 22) + left("| <aggregateChangeability(complexityRiskProfile, duplicationProfile)>", 5));
-    println(left("| Stability", 22) + left("| <aggregateStability(coverageProfile)>", 5));
+    println(left("| Stability", 22) + left("| <aggregateStability(coverageProfile,assertProfile)>", 5));
     println(left("| Testability", 22) + left("| <aggregateTestability(complexityRiskProfile, unitSizeRiskProfile, coverageProfile)>", 5));
 }
 
 void main() {
-    analyseProject(|project://sampleJava|);
+    // analyseProject(|project://sampleJava|);
     analyseProject(|project://smallsql0.21_src|);
-    // analyseProject(|project://hsqldb-2.3.1|);
+    analyseProject(|project://hsqldb-2.3.1|);
 }
