@@ -72,9 +72,9 @@ public tuple[real, str, int, str, int] countMethodsInTests(M3 originalModel, lis
     real assertPercentage = getPercentage(nrOfAsserts, size(methodCallsInTest));
     str assertRanking = "error";
 
-    for (rank <- getUnitTestCoverageRankings()) {
+    for (rank <- getAssertRankings()) {
         if (assertPercentage >= rank[0]) {
-            assertRanking = rank[2];
+            assertRanking = rank[1];
             break;
         }
     }

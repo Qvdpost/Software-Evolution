@@ -28,7 +28,7 @@ public list[tuple[num, num, str]] getDuplicationRankings() {
     return [
         <0, 3, "++">,
         <3, 5, "+">,
-        <5, 10, "0">,
+        <5, 10, "o">,
         <10, 20, "-">,
         <20, 100, "--">
     ];
@@ -38,11 +38,22 @@ public list[tuple[num, num, str]] getUnitTestCoverageRankings() {
     return [
         <95, 100, "++">,
         <80, 95, "+">,
-        <60, 80, "0">,
+        <60, 80, "o">,
         <20, 60, "-">,
         <0, 20, "--">
     ];
 }
+
+public list[tuple[num, str]] getAssertRankings() {
+    return [
+        <200, "++">,
+        <150, "+">,
+        <100, "o">,
+        <90, "-">,
+        <0, "--">
+    ];
+}
+
 
 public tuple[M3,list[Declaration]] getASTs(loc projectLocation) {
     M3 model = createM3FromMavenProject(projectLocation);

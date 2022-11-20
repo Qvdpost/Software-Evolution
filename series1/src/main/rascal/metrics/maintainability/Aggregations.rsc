@@ -22,8 +22,9 @@ str aggregateChangeability(str complexity, str duplicates) {
     return invertUnique(weights)[avg];
 }
 
-str aggregateStability(str unitTesting) {
+str aggregateStability(str unitTesting, str asserts) {
     int avg = weights[unitTesting];
+    // int avg = (weights[unitTesting] + weights[asserts]) / 2;
 
     return invertUnique(weights)[avg];
 }
