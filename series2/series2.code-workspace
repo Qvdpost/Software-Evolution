@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../java_projects/hsqldb-2.3.1"
+		},
+		{
+			"path": "../java_projects/sampleJava"
+		},
+		{
+			"path": "../java_projects/smallsql0.21_src"
+		}
+	],
+	"settings": {}
+}
