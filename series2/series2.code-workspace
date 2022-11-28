@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "../java_projects/smallsql0.21_src"
+		},
+		{
+			"path": "../m3_operational_semantics"
 		}
 	],
 	"settings": {}

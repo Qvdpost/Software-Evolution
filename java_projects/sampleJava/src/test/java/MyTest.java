@@ -1,5 +1,6 @@
 // package myjavacode;
-package test;
+package test.java;
+
 import main.Calculate;
 import org.junit.*;
 import org.junit.Test;

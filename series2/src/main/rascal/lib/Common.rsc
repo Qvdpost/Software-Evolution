@@ -3,6 +3,13 @@ module lib::Common
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import util::Math;
+import IO;
+
+public void initFile(loc target) {
+    touch(target);
+    writeFile(target, "");
+}
+
 
 public map[str, real] getRiskProfile() {
     return (
