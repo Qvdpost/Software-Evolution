@@ -24,30 +24,27 @@ map[value, rel[node,loc]] initOrIncrMap(map[value, rel[node,loc]] mapping, node 
 	return mapping;
 }
 
-void main() {
-    loc project = |project://sampleJava|;
-    loc dumpTarget = |file:///Users/jorrit/Documents/master-software-engineering/Software-Evolution/series2/src/main/rascal/out.txt|;
-    loc dumpTarget2 = |file:///Users/jorrit/Documents/master-software-engineering/Software-Evolution/series2/src/main/rascal/out2.txt|;
+public void printType1Clones( map[value, rel[node,loc]] cloneMap){
+    for ( key <- cloneMap) {
+        if (size(cloneMap[key]) > 1) {
+            for (<_,source> <- cloneMap[key]) {
+                println(source);
+            }
+        }
+    }
+}
 
-    <model, asts> = getASTs(project);
+public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts) {
     list[Declaration] methodAst = getMethodAst(asts);
-
     map[value, rel[node,loc]] nodeAst = ();
+
 	visit(methodAst) {
         case node _Node : {
-            if(_Node.src? && size(getChildren(_Node)) > 3) {
+            if(_Node.src? && size(getChildren(_Node)) > 4) {
                 nodeAst = initOrIncrMap(nodeAst, _Node);
             }
         }
     }
 
-    // dumpGeneric(dumpTarget2, nodeAst);
-    for ( key <- nodeAst) {
-        if (size(nodeAst[key]) > 1) {
-            for (<_,source> <- nodeAst[key]) {
-                println(source);
-            }
-        }
-
-    }
+    return nodeAst;
 }

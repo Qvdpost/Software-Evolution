@@ -7,6 +7,12 @@ public class Calculate {
         System.out.println(false||true);
 
         Integer test = 10;
+        Integer aInteger = 10;
+        Integer bInteger = 10;
+        Integer cInteger = 10;
+        Integer dInteger = 10;
+        Integer eInteger = 10;
+
         /* */System.out.println("Test: " + test.toString());
 
         // for(Integer iep = 0; iep < 10; iep++) { /* */
@@ -18,14 +24,8 @@ public class Calculate {
 
         for(Integer iep = 0; iep < 10; iep++) { /* */
             System.out.println(iep.toString());
-            System.out.println(iep.toString());
         }
 
-        for(Integer iep = 0; iep < 10; iep++) { /* */
-            System.out.println(iep.toString());
-            System.out.println(iep.toString());
-        }
-    }
 
     Calculate(){
         System.out.println("x");
@@ -36,19 +36,31 @@ public class Calculate {
         System.out.println("z");
         System.out.println("z");
         System.out.println("z");
+
+        for(Integer iep = 0; iep < 10; iep++) { /* */
+            System.out.println(iep.toString());
+            System.out.println(iep.toString());
+        }
         return  x - y;
     }
 
     public Integer minus(Integer x, Integer y) {
+
         System.out.println("z");
         System.out.println("z");
         System.out.println("z");
         System.out.println("z");
+
+        for(Integer iep = 0; iep < 10; iep++) { /* */
+            System.out.println(iep.toString());
+            System.out.println(iep.toString());
+        }
         return  x - y;
     }
 
     public Double minus(Double x, Double y) {
         System.out.println("s");
+
         return  x - y;
     }
 
