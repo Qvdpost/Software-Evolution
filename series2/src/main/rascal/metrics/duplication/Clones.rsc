@@ -45,6 +45,6 @@ public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts) {
             }
         }
     }
-
+    dumpToJson(|file:///Users/jorrit/Documents/master-software-engineering/Software-Evolution/series2/src/main/rascal/out.json|, methodAst);
     return nodeAst;
 }
