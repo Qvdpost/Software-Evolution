@@ -3,13 +3,6 @@ module lib::Common
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import util::Math;
-import IO;
-
-public void initFile(loc target) {
-    touch(target);
-    writeFile(target, "");
-}
-
 
 public map[str, real] getRiskProfile() {
     return (
@@ -60,7 +53,6 @@ public list[tuple[num, str]] getAssertRankings() {
         <0, "--">
     ];
 }
-
 
 public tuple[M3,list[Declaration]] getASTs(loc projectLocation) {
     M3 model = createM3FromMavenProject(projectLocation);

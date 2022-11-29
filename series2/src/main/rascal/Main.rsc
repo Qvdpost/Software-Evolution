@@ -21,17 +21,16 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
     return false;
 }
 
-void analyseProject(loc project) {
+void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
-    map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts);
+    map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts, cloneWeight);
     printType1Clones(type1CloneMap);
-
 }
 
 
-
 void main() {
-    analyseProject(|project://sampleJava|);
-    // analyseProject(|project://smallsql0.21_src|);
-    // analyseProject(|project://hsqldb-2.3.1|);
+    int cloneWeight = 40;
+    analyseProject(|project://sampleJava|, cloneWeight);
+    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
 }
