@@ -30,7 +30,7 @@ public void dumpToJson(loc target, value values) {
 }
 
 public void dumpToJson(str target, value values) {
-    loc targetFile = |project://series2/src/main/|;
+    loc targetFile = |project://series2/src/main/rascal|;
     targetFile += target;
     initFile(targetFile);
     writeJSON(targetFile, values);
