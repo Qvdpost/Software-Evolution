@@ -10,6 +10,8 @@ import lib::AstLib;
 import lib::Debug;
 import Node;
 
+import metrics::duplication::Preprocessing;
+
 bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
     println("START: <loopSource>");
     visit(asts){
@@ -21,19 +23,21 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
 
 void analyseProject(loc project) {
     <model, asts> = getASTs(project);
+    rewriteAST(asts);
+    dumpGeneric(|file:///home/quinten/Documents/SoftwareEngineering/software_evolution/Software-Evolution/series2/src/main/rascal/out.txt|, asts);
     // loc x = |file:///Users/jorrit/Documents/Software-Evolution/series2/src/main/rascal/out.json|;
     // writeFile(x, asts);
 
 //   \for(list[Expression] initializers, Expression condition, list[Expression] updaters, Statement body)
 
-    visit(asts){
-        case loop: \for(_,_,_): println(loop);
-        // case loop: \for(list[Expression] \declarationExpression(X),_,_,_): println(X);
-        case loop: \for(list[Expression] initializer,_,_,_): hasClones(loop, asts, loop.src);
-        // case loop: \for(_,_,_,_): println(getName(loop));
+    // visit(asts){
+    //     case loop: \for(_,_,_): println(loop);
+    //     // case loop: \for(list[Expression] \declarationExpression(X),_,_,_): println(X);
+    //     case loop: \for(list[Expression] initializer,_,_,_): hasClones(loop, asts, loop.src);
+    //     // case loop: \for(_,_,_,_): println(getName(loop));
 
 
-    }
+    // }
 
 }
 
