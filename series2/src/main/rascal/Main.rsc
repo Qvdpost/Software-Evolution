@@ -25,8 +25,9 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
 
 void analyseProject(loc project) {
     <model, asts> = getASTs(project);
-    rewriteAST(asts);
-    dumpGeneric(|file:///home/quinten/Documents/SoftwareEngineering/software_evolution/Software-Evolution/series2/src/main/rascal/out.txt|, asts);
+    asts = rewriteAST(asts);
+
+    dumpToJson(|file:///home/quinten/Documents/SoftwareEngineering/software_evolution/Software-Evolution/series2/src/main/rascal/out.json|, asts);
 
     // map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts);
     // printType1Clones(type1CloneMap);
