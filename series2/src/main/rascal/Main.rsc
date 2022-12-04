@@ -4,6 +4,8 @@ import IO;
 import String;
 import List;
 import Node;
+import DateTime;
+
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
@@ -23,6 +25,7 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
 
 void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
+
     map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts, cloneWeight);
     printType1Clones(type1CloneMap);
 }
@@ -30,7 +33,9 @@ void analyseProject(loc project, int cloneWeight) {
 
 void main() {
     int cloneWeight = 40;
+    datetime startTime = now();
     analyseProject(|project://sampleJava|, cloneWeight);
     // analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
+    println(createDuration(startTime, now()));
 }

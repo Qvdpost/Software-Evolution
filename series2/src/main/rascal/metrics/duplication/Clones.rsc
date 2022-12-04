@@ -63,14 +63,19 @@ public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts, int weig
         }
     }
 
-    // Visit AST again, now check if clones are part of a larger clone
-    // this can't be easily integrated in the same visit since some pieces might be missed.
-    visit(methodAst) {
-        case node _Node : {
-            if (_Node.src? && getNumberOfChildNodes(_Node, weight) > weight){
-
-                if(checkForSubsumption(nodeAst, _Node) ) {
-                    subsumptions += {<_Node,_Node.src>};
+    for ( key <- nodeAst) {
+        if (size(nodeAst[key]) > 1) {
+            for (<nod,source> <- nodeAst[key]) {
+                // loop again over the same map
+                for ( keyTwo <- nodeAst) {
+                    if (size(nodeAst[keyTwo]) > 1) {
+                        for (<n,src> <- nodeAst[keyTwo]) {
+                            if(isStrictlyContainedIn(source, src)) {
+                                subsumptions += {<nod,source>};
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -79,10 +84,9 @@ public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts, int weig
     // Remove all subsumptions from the tree
     for (subsumption <- subsumptions) {
         <n, src> = getFirstFrom(subsumption);
-        tmp = nodeAst[unsetRec(n)];
-        nodeAst[unsetRec(n)] = tmp - <n, src>;
+        tmpo = nodeAst[unsetRec(n)];
+        nodeAst[unsetRec(n)] = tmpo - <n, src>;
     }
-
     return nodeAst;
 }
 
