@@ -37,7 +37,7 @@ void analyseProject(loc project, int cloneWeight) {
     asts = rewriteAST(asts);
     map[value, rel[node,loc]] type2CloneMap = getType1Clones(asts, cloneWeight);
     printType1Clones(type2CloneMap);
-    println("Size: <size(type1CloneMap)>");
+    println("Size: <size(type2CloneMap)>");
 
 }
 
