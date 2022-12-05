@@ -5,6 +5,7 @@ import String;
 import List;
 import Node;
 import DateTime;
+import Map;
 
 import lang::java::m3::Core;
 import lang::java::m3::AST;
@@ -33,6 +34,7 @@ void analyseProject(loc project, int cloneWeight) {
 
     dumpToJson("out.json", asts);
     printType1Clones(type1CloneMap);
+    println("Size: <size(type1CloneMap)>");
 }
 
 
@@ -41,6 +43,7 @@ void main() {
     datetime startTime = now();
     analyseProject(|project://tinyJava|, cloneWeight);
     // analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    //3739, 24927
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }

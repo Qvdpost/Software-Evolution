@@ -35,7 +35,7 @@ public class Calculate {
         System.out.println("x");
     }
 
-    public Integer minusss(Integer x, Integer y) {
+    public Integer minus(Integer x, Integer y) {
         System.out.println("z");
         System.out.println("z");
         System.out.println("z");

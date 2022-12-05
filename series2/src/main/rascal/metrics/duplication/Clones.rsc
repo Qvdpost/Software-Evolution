@@ -50,12 +50,11 @@ public void printType1Clones( map[value, rel[node,loc]] cloneMap){
 }
 
 public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts, int weight) {
-    list[Declaration] methodAst = getMethodAst(asts);
     map[value, rel[node,loc]] nodeAst = ();
     list[rel[node,loc]] subsumptions = [];
 
-    // Add all subtrees to a HashMap from a certain weight
-    top-down visit(methodAst) {
+    // Add all subtrees to a HashMap starting from a certain weight
+    top-down visit(asts) {
         case node _Node : {
             if (_Node.src? && getNumberOfChildNodes(_Node, weight) > weight){
                 nodeAst = initOrIncrMap(nodeAst, _Node);
@@ -84,8 +83,8 @@ public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts, int weig
     // Remove all subsumptions from the tree
     for (subsumption <- subsumptions) {
         <n, src> = getFirstFrom(subsumption);
-        tmpo = nodeAst[unsetRec(n)];
-        nodeAst[unsetRec(n)] = tmpo - <n, src>;
+        tmpMap = nodeAst[unsetRec(n)];
+        nodeAst[unsetRec(n)] = tmpMap - <n, src>;
     }
     return nodeAst;
 }

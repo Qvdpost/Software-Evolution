@@ -25,7 +25,25 @@ public class CalculateTwo {
                 System.out.println(j.toString());
             }
         }
+        if (!htmlMode) {
+            for (int i = 0; i < headerArray.length; i++)
+                condlPrint(((i > 0) ? "  " : "")
+                        + SqlFile.divider(maxWidth[i]), false);
+
+            condlPrintln("", false);
+        }
         return  x - y;
+    }
+
+    public static void test(){
+        boolean htmlMode = true;
+        if (!htmlMode) {
+            for (int i = 0; i < headerArray.length; i++)
+                condlPrint(((i > 0) ? "  " : "")
+                        + SqlFile.divider(maxWidth[i]), false);
+
+            condlPrintln("", false);
+        }
     }
 
 }
