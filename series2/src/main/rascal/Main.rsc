@@ -29,12 +29,16 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
 void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
 
-    asts = rewriteAST(asts);
     map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts, cloneWeight);
 
-    dumpToJson("out.json", asts);
     printType1Clones(type1CloneMap);
     println("Size: <size(type1CloneMap)>");
+
+    asts = rewriteAST(asts);
+    map[value, rel[node,loc]] type2CloneMap = getType1Clones(asts, cloneWeight);
+    printType1Clones(type2CloneMap);
+    println("Size: <size(type1CloneMap)>");
+
 }
 
 
