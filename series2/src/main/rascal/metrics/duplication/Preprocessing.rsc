@@ -7,6 +7,7 @@ import lib::Debug;
 import lib::AstLib;
 
 import IO;
+import Node;
 
 bool isVarType(Expression expr) {
 	if (expr.decl.scheme == "java+variable")
@@ -56,6 +57,7 @@ str typToString(TypeSymbol typ) {
 str replaceVarName(str word, Expression expr) {
 	if (\qualifiedName(_, _) := expr)
 		return "__qualifiedName__";
+
 	switch (expr.typ) {
 		case \int(): return "__" + typToString(expr.typ) + "__";
 		case \float(): return "__" + typToString(expr.typ) + "__";
@@ -65,32 +67,61 @@ str replaceVarName(str word, Expression expr) {
 		case \char(): return "__" + typToString(expr.typ) + "__";
 		case \byte(): return "__" + typToString(expr.typ) + "__";
 		case \long(): return "__" + typToString(expr.typ) + "__";
-		//case \void(): return "__" + typToString(expr.typ) + "__";
 		case \null(): return "__" + typToString(expr.typ) + "__";
 		case \array(_, _): return "__" + typToString(expr.typ) + "__";
+        case \class(decl, _): return "__" + decl.path + "__";
 	}
-
-	//if (word == expr.name)
-	//	return "__" + typToString(expr.typ) + "__";
-
-
 
 	return "__" + word + "__";
 }
 
 Expression anonymizeVar(Expression expr) {
-	if (expr@name ?)
-		expr.name = replaceVarName(expr.name, expr);
+    switch (expr) {
+        case \variable(name, _): expr.name = replaceVarName(name, expr);
+        case \variable(name, _, _): expr.name = replaceVarName(name, expr);
+    }
 
 	return expr;
+}
+
+Expression emptyLiteral(Expression literal) {
+    switch (literal) {
+        case \stringLiteral(_): literal.stringValue = "";
+        case \characterLiteral(_): literal.charValue = "";
+        case \number(_): literal.numberValue = "0";
+    }
+
+    return literal;
+}
+
+Expression rewriteExpr(Expression expr) {
+
+    switch (expr) {
+        case \variable(name, _): expr.name = replaceVarName(name, expr);
+        case \variable(name, _, _): expr.name = replaceVarName(name, expr);
+		case \simpleName(name): expr.name = replaceVarName(name, expr);
+        case literal: \stringLiteral(_): return emptyLiteral(literal);
+        case literal: \characterLiteral(_): return emptyLiteral(literal);
+        case literal: \number(_): return emptyLiteral(literal);
+    }
+
+    return expr;
+}
+
+Declaration rewriteDecl(Declaration decl) {
+    switch (decl) {
+        case \parameter(\simpleType(paramType), name, _): decl.name = replaceVarName(name, paramType);
+    }
+    return decl;
 }
 
 
 list[Declaration] rewriteAST(list[Declaration] asts) {
 
 	// Modify ast for clone detection.
-	units = visit(asts){
-		case \Expression expr => anonymizeVar(expr)
+	asts = visit(asts){
+		case \Expression expr => rewriteExpr(expr)
+        case \Declaration decl => rewriteDecl(decl)
 	}
 
     return asts;
