@@ -4,6 +4,8 @@ import IO;
 import String;
 import List;
 import Node;
+import DateTime;
+
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
@@ -23,21 +25,19 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
     return false;
 }
 
-void analyseProject(loc project) {
+void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
-    asts = rewriteAST(asts);
 
-    dumpToJson(|file:///home/quinten/Documents/SoftwareEngineering/software_evolution/Software-Evolution/series2/src/main/rascal/out.json|, asts);
-
-    // map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts);
-    // printType1Clones(type1CloneMap);
-
+    map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts, cloneWeight);
+    printType1Clones(type1CloneMap);
 }
 
 
-
 void main() {
-    analyseProject(|project://sampleJava|);
-    // analyseProject(|project://smallsql0.21_src|);
-    // analyseProject(|project://hsqldb-2.3.1|);
+    int cloneWeight = 40;
+    datetime startTime = now();
+    analyseProject(|project://sampleJava|, cloneWeight);
+    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
+    println(createDuration(startTime, now()));
 }
