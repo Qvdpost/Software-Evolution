@@ -32,12 +32,15 @@ void analyseProject(loc project, int cloneWeight) {
     map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts, cloneWeight);
 
     printType1Clones(type1CloneMap);
+    // TODO: fix size of cloneMap by filtering > 1
     println("Size: <size(type1CloneMap)>");
 
     asts = rewriteAST(asts);
     map[value, rel[node,loc]] type2CloneMap = getType1Clones(asts, cloneWeight);
     printType1Clones(type2CloneMap);
     println("Size: <size(type2CloneMap)>");
+
+    dumpToJson("out.json", asts);
 
 }
 

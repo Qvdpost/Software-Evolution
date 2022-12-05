@@ -94,12 +94,12 @@ Expression emptyLiteral(Expression literal) {
     return literal;
 }
 
-Expression rewriteExpr(Expression expr) {
+Expression rewriteExpr(Expression expr, map[str, int] var_occurrence) {
 
     switch (expr) {
-        case \variable(name, _): expr.name = replaceVarName(name, expr);
-        case \variable(name, _, _): expr.name = replaceVarName(name, expr);
-		case \simpleName(name): expr.name = replaceVarName(name, expr);
+        case \variable(name, _): expr.name = "<var_occurrence[name]>" + replaceVarName(name, expr);
+        case \variable(name, _, _): expr.name = "<var_occurrence[name]>" + replaceVarName(name, expr);
+		case \simpleName(name): expr.name = "<var_occurrence[name]?"">" + replaceVarName(name, expr);
         case literal: \stringLiteral(_): return emptyLiteral(literal);
         case literal: \characterLiteral(_): return emptyLiteral(literal);
         case literal: \number(_): return emptyLiteral(literal);
@@ -108,23 +108,37 @@ Expression rewriteExpr(Expression expr) {
     return expr;
 }
 
-Declaration rewriteDecl(Declaration decl) {
+Declaration rewriteDecl(Declaration decl, map[str, int] var_occurrence) {
     switch (decl) {
-        case \parameter(\simpleType(paramType), name, _): decl.name = replaceVarName(name, paramType);
+        case \parameter(\simpleType(paramType), name, _): decl.name = "<var_occurrence[name]>" + replaceVarName(name, paramType);
     }
     return decl;
 }
 
 
 list[Declaration] rewriteAST(list[Declaration] asts) {
-
+	list[Declaration] result = [];
 	// Modify ast for clone detection.
-	asts = visit(asts){
-		case \Expression expr => rewriteExpr(expr)
-        case \Declaration decl => rewriteDecl(decl)
+	for (ast <- asts) {
+		int var_count = 0;
+		map[str, int] var_occurrence = ();
+		visit (ast) {
+			case \variable(name, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+			case \variable(name, _, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+			// case \simpleName(name): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+			case \parameter(_, name, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+		}
+
+		println(var_occurrence);
+
+		result += visit(ast){
+			case \Expression expr => rewriteExpr(expr, var_occurrence)
+			case \Declaration decl => rewriteDecl(decl, var_occurrence)
+		}
 	}
 
-    return asts;
+
+    return result;
 }
 
 // bool isSubsumed(set[loc] a, set[loc] b) {
