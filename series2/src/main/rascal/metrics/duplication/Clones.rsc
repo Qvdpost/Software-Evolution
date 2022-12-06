@@ -52,12 +52,11 @@ public int getNumberOfClones(map[value, rel[node,loc]] cloneMap){
     return counter;
 }
 
-public void printCloneMap(map[value, rel[node,loc]] cloneMap){
-    for ( key <- cloneMap) {
-        if (size(cloneMap[key]) > 1) {
-            for (<nod,source> <- cloneMap[key]) {
-                println(source);
-            }
+public void printCloneMap(lrel[int,list[value]] cloneMap){
+    for ( <amountCloneLines, locs> <- cloneMap) {
+        println("<amountCloneLines>");
+        for (l<- locs) {
+            println(l);
         }
     }
 }

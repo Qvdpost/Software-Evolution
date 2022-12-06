@@ -32,21 +32,21 @@ void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
     <totalCodeLines, _> = mainLoC(project);
 
-    // <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
-    // <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
-    // println(totalCodeLines);
-    // println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
+    <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
+    <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
+    println(totalCodeLines);
+    println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
     // dumpToJson("Type1Clones.json",type1CloneList);
     // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
 
+    printCloneMap(type1CloneList);
+    // asts = rewriteAST(asts);
+    // <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
+    // <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
+    // println(totalCodeLines);
+    // println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
 
-    asts = rewriteAST(asts);
-    <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
-    <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
-    println(totalCodeLines);
-    println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
-
-    showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
+    // showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
 
     // printCloneMap(type2CloneMap);
     // println("Size: <size(type2CloneMap)>");
@@ -59,8 +59,8 @@ void main() {
     int cloneWeight = 40;
     datetime startTime = now();
     // analyseProject(|project://tinyJava|, cloneWeight);
-    // analyseProject(|project://sampleJava|, cloneWeight);
-    analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    analyseProject(|project://sampleJava|, cloneWeight);
+    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }
