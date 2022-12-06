@@ -6,16 +6,18 @@ import List;
 import Node;
 import DateTime;
 import Map;
-
+import Set;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
 import lib::AstLib;
 import lib::Debug;
 import metrics::duplication::Clones;
-
-
 import metrics::duplication::Preprocessing;
+import metrics::volume::LoC;
+import lang::json::IO;
+import vis::Charts;
+import util::IDEServices;
 
 bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
     println("START: <loopSource>");
@@ -29,15 +31,19 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
 void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
 
-    map[value, rel[node,loc]] type1CloneMap = getType1Clones(asts, cloneWeight);
+    <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
+    <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
+    <totalCodeLines, _> = mainLoC(project);
+    println(totalCodeLines);
+    println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
+    dumpToJson("Type1Clones.json",type1CloneList);
 
-    printType1Clones(type1CloneMap);
-    println("Size: <size(type1CloneMap)>");
+
+    showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
 
     asts = rewriteAST(asts);
     map[value, rel[node,loc]] type2CloneMap = getType1Clones(asts, cloneWeight);
-    printType1Clones(type2CloneMap);
-    println("Size: <size(type1CloneMap)>");
+    printCloneMap(type2CloneMap);
 
 }
 
@@ -46,8 +52,8 @@ void main() {
     int cloneWeight = 40;
     datetime startTime = now();
     analyseProject(|project://tinyJava|, cloneWeight);
+    // analyseProject(|project://sampleJava|, cloneWeight);
     // analyseProject(|project://smallsql0.21_src|, cloneWeight);
-    //3739, 24927
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }

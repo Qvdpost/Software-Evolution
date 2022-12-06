@@ -7,6 +7,7 @@ import lang::java::m3::AST;
 import lib::Common;
 import lib::Debug;
 import lib::AstLib;
+import metrics::volume::LoC;
 
 import IO;
 import List;
@@ -14,20 +15,6 @@ import Set;
 import Map;
 import Node;
 import Location;
-
-public bool checkForSubsumption(map[value, rel[node,loc]] cloneMap, _node){
-    for ( key <- cloneMap) {
-        if (size(cloneMap[key]) > 1) {
-            for (<n,source> <- cloneMap[key]) {
-                // If the current source is part of a large part. return true
-                if(isStrictlyContainedIn(_node.src, source)) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
 
 map[value, rel[node,loc]] initOrIncrMap(map[value, rel[node,loc]] mapping, node _Node) {
     node unsetNode = unsetRec(_Node);
@@ -39,7 +26,33 @@ map[value, rel[node,loc]] initOrIncrMap(map[value, rel[node,loc]] mapping, node 
 	return mapping;
 }
 
-public void printType1Clones( map[value, rel[node,loc]] cloneMap){
+public lrel[int,list[value]] getSlocs(map[value, rel[node,loc]] cloneMap){
+    map[int, list[value]] cleanMap = ();
+    for (key <- cloneMap){
+        if (size(cloneMap[key]) > 1) {
+            for (<_, src> <- cloneMap[key]) {
+                cleanMap[countLoC(src)] ? [] += [src];
+            }
+        }
+    }
+    sortedList = sort(toList(cleanMap));
+
+    return sortedList;
+}
+
+public int getNumberOfClones(map[value, rel[node,loc]] cloneMap){
+    int counter = 0;
+    for ( key <- cloneMap) {
+        if (size(cloneMap[key]) > 1) {
+            for (_ <- cloneMap[key]) {
+                counter += 1;
+            }
+        }
+    }
+    return counter;
+}
+
+public void printCloneMap(map[value, rel[node,loc]] cloneMap){
     for ( key <- cloneMap) {
         if (size(cloneMap[key]) > 1) {
             for (<nod,source> <- cloneMap[key]) {
@@ -49,7 +62,7 @@ public void printType1Clones( map[value, rel[node,loc]] cloneMap){
     }
 }
 
-public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts, int weight) {
+public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, int weight) {
     map[value, rel[node,loc]] nodeAst = ();
     list[rel[node,loc]] subsumptions = [];
 
@@ -86,7 +99,24 @@ public map[value, rel[node,loc]] getType1Clones(list[Declaration] asts, int weig
         tmpMap = nodeAst[unsetRec(n)];
         nodeAst[unsetRec(n)] = tmpMap - <n, src>;
     }
-    return nodeAst;
+
+    int nrOfClones = getNumberOfClones(nodeAst);
+
+    return <getSlocs(nodeAst), nrOfClones>;
+}
+
+public tuple[rel[str, int], int] convertToCharData(lrel[int,list[value]] cloneList){
+    barChartData = {<"",0>};
+    int nrOfClonedLines = 0;
+
+    for (<amount, locs> <- cloneList) {
+        barChartData += {<"0<amount>", size(locs)>};
+        nrOfClonedLines = amount * size(locs);
+    }
+
+    barChartData = barChartData - {<"",0>};
+
+    return <barChartData,nrOfClonedLines>;
 }
 
 private int getNumberOfChildNodes(node n, int weight) {
