@@ -30,20 +30,27 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
 
 void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
-
-    <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
-    <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
     <totalCodeLines, _> = mainLoC(project);
-    println(totalCodeLines);
-    println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
-    dumpToJson("Type1Clones.json",type1CloneList);
 
+    // <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
+    // <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
+    // println(totalCodeLines);
+    // println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
+    // dumpToJson("Type1Clones.json",type1CloneList);
+    // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
 
-    showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
 
     asts = rewriteAST(asts);
-    map[value, rel[node,loc]] type2CloneMap = getType1Clones(asts, cloneWeight);
-    printCloneMap(type2CloneMap);
+    <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
+    <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
+    println(totalCodeLines);
+    println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
+
+    showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
+
+    // printCloneMap(type2CloneMap);
+    // println("Size: <size(type2CloneMap)>");
+    // dumpToJson("out.json", asts);
 
 }
 
@@ -51,9 +58,9 @@ void analyseProject(loc project, int cloneWeight) {
 void main() {
     int cloneWeight = 40;
     datetime startTime = now();
-    analyseProject(|project://tinyJava|, cloneWeight);
+    // analyseProject(|project://tinyJava|, cloneWeight);
     // analyseProject(|project://sampleJava|, cloneWeight);
-    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }
