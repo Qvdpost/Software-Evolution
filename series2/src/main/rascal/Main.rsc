@@ -63,8 +63,8 @@ void main() {
     int cloneWeight = 5;
     datetime startTime = now();
     // analyseProject(|project://tinyJava|, cloneWeight);
-    // analyseProject(|project://sampleJava|, cloneWeight);
-    analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    analyseProject(|project://sampleJava|, cloneWeight);
+    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }
