@@ -9,10 +9,6 @@ layout LAYOUTLIST  =
   LAYOUT* !>> [\t-\n \a0C-\a0D \ ] !>> (  [/]  [*]  ) !>> (  [/]  [/]  ) !>> "/*" !>> "//"
   ;
 
-// lexical IntegerLiteral = [0-9]+;
-
-lexical LoC = ![Comment]+;
-
 lexical EOLCommentChars =
   ![\n \a0D]*
   ;
@@ -66,11 +62,14 @@ lexical CommentPart =
   | Asterisk !>> [/]
   | EscEscChar
   ;
+
+
+lexical IntegerLiteral = [0-9]+;
+
+lexical LoC = ![Comment]+ !>> [Comment] [LineTerminator EndOfFile];
+
 start syntax Prog = prog: LoC* ;
 
-// start syntax Exp
-//     = LoC
-//     ;
 
 // start syntax Exp
 //   = integerLiteral: IntegerLiteral

@@ -5,8 +5,9 @@ import lang::java::m3::AST;
 
 import IO;
 import List;
+import Map;
 import Set;
-import String;
+
 
 list[Declaration] getASTs(loc projectLocation) {
     M3 model = createM3FromMavenProject(projectLocation);
@@ -28,40 +29,45 @@ int getNumberOfForLoops(list[Declaration] asts){
 	visit(asts){
 		case \for(_, _, _): fors += 1;
 		case \for(_, _, _, _): fors += 1;
+		case \foreach(_, _, _): fors += 1;
 	}
 	return fors;
 }
 
 tuple[int, list[str]] mostOccurrences(map[str, int] mapping) {
 
-	max_occurrence = 0;
-	for (key <- mapping) {
-		if (mapping[key] > max_occurrence) {
-			max_occurrence = mapping[key];
-		}
-	}
-
-	return <max_occurrence, [key | key <- mapping, mapping[key] == max_occurrence]>;
+	inverse = invert(mapping);
+	max_occurrence = max(domain(inverse));
+	return <max_occurrence, toList(inverse[max_occurrence])>;
 }
 
 map[str, int] initOrIncrMap(map[str, int] mapping, str key) {
 	if (key in mapping) {mapping[key] += 1;}
-	else { mapping[key] = 0;}
+	else { mapping[key] = 1;}
 
 	return mapping;
 }
 
-tuple[int, list[str]] mostOccurringVariable(list[Declaration] asts){
+map[str, int] incrMap(map[str, int] mapping, str key) {
+	if (key in mapping) {mapping[key] += 1;}
+
+	return mapping;
+}
+
+tuple[int, list[str]] mostOccurringVariable(list[Declaration] asts) {
 	map [str, int] varMap = ();
 	visit(asts){
 		case \variable(name, _): varMap = initOrIncrMap(varMap, name);
 		case \variable(name, _, _): varMap = initOrIncrMap(varMap, name);
+		case \parameter(_, str name, _): varMap = initOrIncrMap(varMap, name);
+		case \vararg(_, str name): varMap = initOrIncrMap(varMap, name);
+		case \simpleName(name): varMap = incrMap(varMap, name);
 	}
 
 	return mostOccurrences(varMap);
 }
 
-tuple[int, list[str]] mostOccurringNumber(list[Declaration] asts){
+tuple[int, list[str]] mostOccurringNumber(list[Declaration] asts) {
 	map [str, int] varMap = ();
 	visit(asts){
 		case \characterLiteral(name): varMap = initOrIncrMap(varMap, name);
@@ -73,7 +79,7 @@ tuple[int, list[str]] mostOccurringNumber(list[Declaration] asts){
 	return mostOccurrences(varMap);
 }
 
-list[loc] findNullReturned(list[Declaration] asts){
+list[loc] findNullReturned(list[Declaration] asts) {
 	list[loc] locs = [];
 	visit(asts){
 		case \return(expr): {
@@ -89,6 +95,7 @@ test bool numberOfInterfaces() {
 }
 
 void main() {
-    println("Hello Rascal");
+	asts = getASTs(|project://smallsql0.21_src|);
+	println(mostOccurringVariable(asts));
+	println(mostOccurringNumber(asts));
 }
-

@@ -76,15 +76,6 @@ map[str, set[loc]] getDuplicates(map[str, set[loc]] occurrences, int treshold) {
     return result;
 }
 
-str merge(str l, str r) {
-
-
-    for ([*head, *l, *_] := r)
-    {
-        println("gotcha at <size(head)>");
-    }
-}
-
 map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
 
     map[set[loc], str] invertedDuplicates = invertUnique(duplicates);
@@ -128,8 +119,6 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
 }
 
 tuple[int, real, str] duplicationRank(loc project, int lineCount) {
-    // loc project = |project://sampleJava|;
-    // loc project = |project://smallsql0.21_src|;
 
     list[island::AST::Prog] asts = getIslandASTsFromProject(project);
 
@@ -149,8 +138,6 @@ tuple[int, real, str] duplicationRank(loc project, int lineCount) {
             duplicateLoC += countLoC(src);
         }
     }
-
-    // TODO: Series 2: voor elke originele code class met nog maar 1 element -> zoek in backup van originele code class naar de andere dupolicates en herstel de code class
 
     real relDuplicateLoC = getPercentage(duplicateLoC, lineCount);
 

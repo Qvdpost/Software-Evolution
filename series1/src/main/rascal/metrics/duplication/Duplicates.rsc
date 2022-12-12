@@ -128,8 +128,6 @@ map[str, set[loc]] mergeBlocks(map[str, set[loc]] duplicates) {
 }
 
 tuple[int, real, str] duplicationRank(loc project, int lineCount) {
-    // loc project = |project://sampleJava|;
-    // loc project = |project://smallsql0.21_src|;
 
     list[island::AST::Prog] asts = getIslandASTsFromProject(project);
 

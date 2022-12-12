@@ -14,6 +14,9 @@
 		},
 		{
 			"path": "../m3_operational_semantics"
+		},
+		{
+			"path": "../java_projects/tinyJava"
 		}
 	],
 	"settings": {}

@@ -32,21 +32,25 @@ void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
     <totalCodeLines, _> = mainLoC(project);
 
-    // <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
-    // <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
-    // println(totalCodeLines);
-    // println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
-    // dumpToJson("Type1Clones.json",type1CloneList);
-    // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
-
-
-    asts = rewriteAST(asts);
-    <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
-    <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
+    <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
+    <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
     println(totalCodeLines);
-    println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
+    println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
+    dumpToJson("Type1Clones.json",type1CloneList);
+    // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
+    iprintln(type1CloneList);
 
-    showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
+
+
+    // asts = rewriteAST(asts);
+    // <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
+    // <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
+    // println(totalCodeLines);
+    // println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
+    // // dumpToJson("Type2Clones.json",type2CloneList);
+    // iprintln(type2CloneList);
+
+    // showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
 
     // printCloneMap(type2CloneMap);
     // println("Size: <size(type2CloneMap)>");
@@ -56,7 +60,7 @@ void analyseProject(loc project, int cloneWeight) {
 
 
 void main() {
-    int cloneWeight = 40;
+    int cloneWeight = 5;
     datetime startTime = now();
     // analyseProject(|project://tinyJava|, cloneWeight);
     // analyseProject(|project://sampleJava|, cloneWeight);
