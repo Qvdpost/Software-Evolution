@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "../java_projects/tinyJava"
+		},
+		{
+			"path": "../java_projects/jorritJava"
 		}
 	],
 	"settings": {}

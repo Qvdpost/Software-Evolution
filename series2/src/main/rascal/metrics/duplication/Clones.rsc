@@ -10,11 +10,13 @@ import lib::AstLib;
 import metrics::volume::LoC;
 
 import IO;
+import String;
 import List;
 import Set;
 import Map;
 import Node;
 import Location;
+import util::Math;
 
 map[value, set[loc]] initOrIncrMap(map[value, set[loc]] mapping, node _Node) {
     node unsetNode = unsetRec(_Node);

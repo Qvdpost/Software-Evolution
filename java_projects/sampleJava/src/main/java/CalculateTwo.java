@@ -68,4 +68,19 @@ public class CalculateTwo {
 
         return  result - y;
     }
+
+    public Double type3ClonePartTwo(Double x, Double y) {
+        Double result = 0.0;
+
+        System.out.println(x);
+        result = x % y;
+        System.out.println(result);
+
+        if (result > 0) {
+            result *= 2;
+        } else {
+            result *= 3;
+        }
+        return  result - y;
+    }
 }
