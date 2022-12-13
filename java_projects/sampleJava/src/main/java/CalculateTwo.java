@@ -9,14 +9,17 @@ public class CalculateTwo {
     }
 
     CalculateTwo(){
-        System.out.println("x");
+        new CalculateTwo();
     }
 
-    public Integer plus(Integer x, Integer y) {
+    public Integer add(Integer lhs, Integer rhs) {
+        return lhs + rhs;
+    }
+
+    public Double type1Clone(Double x, Double y) {
         System.out.println("z");
-        System.out.println("z");
-        System.out.println("z");
-        System.out.println("z");
+        System.out.println("y");
+        System.out.println("x");
 
         for(Integer iep = 0; iep < 10; iep++) { /* */
             System.out.println(iep.toString());
@@ -25,25 +28,44 @@ public class CalculateTwo {
                 System.out.println(j.toString());
             }
         }
-        if (!htmlMode) {
-            for (int i = 0; i < headerArray.length; i++)
-                condlPrint(((i > 0) ? "  " : "")
-                        + SqlFile.divider(maxWidth[i]), false);
+        return  x - y;
+    }
 
-            condlPrintln("", false);
+
+    public Integer type2Clone(Integer x, Integer y) {
+
+        System.out.println("This");
+        System.out.println("is ");
+        System.out.println("a type2Clone");
+
+        Integer Whale = 96;
+
+        for(Integer iterator = 0; iterator < 10; iterator++) { /* */
+            System.out.println(iterator.toString());
+            for(Integer j = 0; j < 10; j++) { /* */
+                System.out.println(j.toString());
+                System.out.println(j.toString());
+            }
         }
         return  x - y;
     }
 
-    public static void test(){
-        boolean htmlMode = true;
-        if (!htmlMode) {
-            for (int i = 0; i < headerArray.length; i++)
-                condlPrint(((i > 0) ? "  " : "")
-                        + SqlFile.divider(maxWidth[i]), false);
+    public Double type3Clone(Double x, Double y) {
+        Double result = 0.0;
 
-            condlPrintln("", false);
+        System.out.println(x);
+        result = x % y;
+        System.out.println(result);
+
+
+        if (result > 0) {
+            result *= 2;
+        } else {
+            result *= 3;
         }
-    }
 
+        System.out.println(result);
+
+        return  result - y;
+    }
 }
