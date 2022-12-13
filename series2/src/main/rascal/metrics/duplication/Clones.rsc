@@ -142,34 +142,17 @@ map[value, set[loc]] getDuplicates(map[value, set[loc]] occurrences, int treshol
 
 public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, int weight) {
     map[value, set[loc]] nodeAst = ();
-    list[set[loc]] subsumptions = [];
+    list[tuple[value, loc]] subsumptions = [];
 
     // Add all subtrees to a HashMap starting from a certain weight
-    int block_count = 0;
-    int sizeable_block_count = 0;
     top-down visit(asts) {
-        // case _Node: \method(_, _, _, _, \block(impl)): {
-        //     if (_Node.src? && getNumberOfChildNodes(_Node, weight) > weight){
-        //         nodeAst = initOrIncrMap(nodeAst, _Node);
-        //         int blockSize = 4;
-        //         for (init <- [0 .. size(impl) - blockSize + 1], size(impl) > blockSize) {
-        //             tempBlock = slice(impl, init, blockSize);
-        //             tempNode = block(tempBlock);
-        //             tempSrc = cover([stmt.src | stmt <- tempBlock]);
-        //             tempNode.src = tempSrc;
-
-        //             nodeAst = initOrIncrMap(nodeAst, tempNode);
-        //         }
-        //     }
-        // }
         case _Node: \block(impl): {
-            block_count += 1;
-            if (_Node.src? && getNumberOfChildNodes(_Node, weight) > weight) {
-                sizeable_block_count += 1;
-                nodeAst = initOrIncrMap(nodeAst, _Node);
-                int blockSize = 4;
-                for (init <- [0 .. size(impl) - blockSize + 1], size(impl) >= blockSize) {
-                    tempBlock = slice(impl, init, blockSize);
+            blockSize = size(impl);
+            // TODO move hardcoded value to parameters
+            cloneBlockSize = 2;
+            if (_Node.src? && blockSize > cloneBlockSize) {
+                for (init <- [0 .. blockSize - cloneBlockSize + 1]) {
+                    tempBlock = slice(impl, init, cloneBlockSize);
                     tempNode = block(tempBlock);
                     tempSrc = cover([stmt.src | stmt <- tempBlock]);
                     tempNode.src = tempSrc;
@@ -179,8 +162,6 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
             }
         }
     }
-
-    println("Blocks: <sizeable_block_count>/<block_count>");
 
     nodeAst = getDuplicates(nodeAst);
 
@@ -194,7 +175,7 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
                     if (size(nodeAst[keyTwo]) > 1) {
                         for (src <- nodeAst[keyTwo]) {
                             if(isStrictlyContainedIn(source, src)) {
-                                subsumptions += {source};
+                                subsumptions += <key, source>;
                                 break;
                             }
                         }
@@ -205,13 +186,13 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
     }
 
     // Remove all subsumptions from the tree
-    // for (subsumption <- subsumptions) {
-    //     src = getFirstFrom(subsumption);
-    //     tmpMap = nodeAst[unsetRec(n)];
-    //     nodeAst[unsetRec(n)] = tmpMap - src;
-    // }
+    for (tuple[value n, loc src] sub <- subsumptions) {
+        nodeAst[unsetRec(sub.n)] -= {sub.src};
+    }
 
     int nrOfClones = getNumberOfClones(nodeAst);
+
+    println("Clones: <nrOfClones>");
 
     return <getSlocs(nodeAst), nrOfClones>;
 }

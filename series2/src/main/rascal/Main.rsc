@@ -42,13 +42,13 @@ void analyseProject(loc project, int cloneWeight) {
 
 
 
-    // asts = rewriteAST(asts);
-    // <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
-    // <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
-    // println(totalCodeLines);
-    // println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
-    // // dumpToJson("Type2Clones.json",type2CloneList);
-    // iprintln(type2CloneList);
+    asts = rewriteAST(asts);
+    <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
+    <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
+    println(totalCodeLines);
+    println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
+    // dumpToJson("Type2Clones.json",type2CloneList);
+    iprintln(type2CloneList);
 
     // showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
 
