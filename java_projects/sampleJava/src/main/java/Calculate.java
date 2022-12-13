@@ -61,4 +61,25 @@ public class Calculate {
 
         return  result - y;
     }
+
+    public Double type3PartTwo(Double x, Double y) {
+        Double result = 0.0;
+        result = x % y;
+        System.out.println(result);
+
+        if (result > 0) {
+            result *= 2;
+        } else {
+            result *= 3;
+        }
+
+
+        for(Integer f = 0; f < 10; f++) { /* */
+            result += 1;
+        }
+
+        Integer test = this.add(10, 3);
+
+        return  result - y;
+    }
 }

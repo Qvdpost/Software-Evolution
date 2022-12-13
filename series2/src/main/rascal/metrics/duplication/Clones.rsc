@@ -10,11 +10,13 @@ import lib::AstLib;
 import metrics::volume::LoC;
 
 import IO;
+import String;
 import List;
 import Set;
 import Map;
 import Node;
 import Location;
+import util::Math;
 
 map[value, set[loc]] initOrIncrMap(map[value, set[loc]] mapping, node _Node) {
     node unsetNode = unsetRec(_Node);
@@ -223,4 +225,100 @@ private int getNumberOfChildNodes(node n, int weight) {
         }
     }
     return count;
+}
+
+int convertToNumber(int fors, real ifs) {
+    result = toString(fors) + toString(toInt(ifs));
+    return String::toInt(result);
+}
+
+
+public tuple[lrel[int,list[value]], int] getType3Clones(list[Declaration] asts, int weight) {
+    map[value, set[loc]] nodeAst = ();
+    list[tuple[value, loc]] subsumptions = [];
+    // ast = getMethodAst(asts);
+    int forLoops = 0;
+    real ifElseBlocks = 0.0;
+    list[int] profileList = [];
+    // Add all subtrees to a HashMap starting from a certain weight
+    visit(asts) {
+        case meth: \method(_,_,_,_,\block(stmts)) : {
+            forLoops = 0;
+            ifElseBlocks = 0.0;
+            visit(stmts) {
+                case \for(_,_,_,_): forLoops +=1;
+                case \if(_,_): ifElseBlocks += 1.0;
+                case \if(_,_,_): ifElseBlocks += 1.5;
+            }
+            // nodeAst = convertToNumber(forLoops, ifElseBlocks)
+        }
+
+        // case _Node: \block(impl): {
+        //     blockSize = size(impl);
+        //     // TODO move hardcoded value to parameters
+        //     cloneBlockSize = 2;
+        //     if (_Node.src? && blockSize > cloneBlockSize) {
+        //         println("count: <impl>");
+        //         visit(_Node) {
+        //             case \for(_,_,_,_): forLoops +=1;
+        //             case \if(_,_): ifElseBlocks += 1;
+        //             case \if(_,_,_): ifElseBlocks += 1;
+        //         }
+
+        //         for (init <- [0 .. blockSize - cloneBlockSize + 1]) {
+        //             tempBlock = slice(impl, init, cloneBlockSize);
+        //             tempNode = block(tempBlock);
+        //             tempSrc = cover([stmt.src | stmt <- tempBlock]);
+        //             tempNode.src = tempSrc;
+
+        //             nodeAst = initOrIncrMap(nodeAst, tempNode);
+        //         }
+        //     }
+        // }
+
+    }
+    println("forloop: <forLoops>");
+    println("ifElseBlocks: <ifElseBlocks>");
+    exit()
+    nodeAst = getDuplicates(nodeAst);
+
+    nodeAst = mergeBlocks(nodeAst);
+
+    for ( key <- nodeAst) {
+        if (size(nodeAst[key]) > 1) {
+            for (source <- nodeAst[key]) {
+                // loop again over the same map
+                for ( keyTwo <- nodeAst) {
+                    if (size(nodeAst[keyTwo]) > 1) {
+                        for (src <- nodeAst[keyTwo]) {
+                            if(isStrictlyContainedIn(source, src)) {
+                                subsumptions += <key, source>;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Remove all subsumptions from the tree
+    for (tuple[value n, loc src] sub <- subsumptions) {
+        nodeAst[unsetRec(sub.n)] -= {sub.src};
+    }
+
+    int nrOfClones = getNumberOfClones(nodeAst);
+
+    println("Clones: <nrOfClones>");
+
+    return <getSlocs(nodeAst), nrOfClones>;
+}
+
+void main(){
+    loc project = |project://jorritJava|;
+    <model, asts> = getASTs(project);
+
+    getType3Clones(asts, 40);
+
+
 }
