@@ -227,6 +227,12 @@ private int getNumberOfChildNodes(node n, int weight) {
     return count;
 }
 
+bool isSimilar(set[node] a, set[node] b) {
+    // if (2 * size(a & b) / )
+
+    return true;
+}
+
 public tuple[lrel[int,list[value]], int] getType3Clones(list[Declaration] asts, int weight) {
     map[int, map[node, loc]] blockAST = ();
     list[tuple[value, loc]] subsumptions = [];
@@ -254,7 +260,7 @@ public tuple[lrel[int,list[value]], int] getType3Clones(list[Declaration] asts, 
                 for (b <- blockAST[blockSize + offset]) {
                     if (a != b && node _block:\block(_) := a && node other:\block(_) := b) {
 
-                        if (size(toSet(unsetRec(_block).statements) & toSet(unsetRec(other).statements)) > blockSize - 5) {
+                        if (isSimilar(toSet(unsetRec(_block).statements), toSet(unsetRec(other).statements))) {
                             clones[a]?{} += {a.src, b.src};
                         }
                     }
