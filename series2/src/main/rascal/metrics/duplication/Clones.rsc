@@ -224,3 +224,44 @@ private int getNumberOfChildNodes(node n, int weight) {
     }
     return count;
 }
+
+public tuple[lrel[int,list[value]], int] getType3Clones(list[Declaration] asts, int weight) {
+    map[int, map[node, loc]] blockAST = ();
+    list[tuple[value, loc]] subsumptions = [];
+
+    // Add all subtrees to a HashMap starting from a certain weight
+    top-down visit(asts) {
+        case _Node: \block(impl): {
+            blockSize = size(impl);
+            if (_Node.src? && blockSize > 3) {
+                if (blockSize notin blockAST){ blockAST[blockSize] = (); }
+
+                blockAST[blockSize][_Node] = _Node.src;
+            }
+        }
+    }
+
+
+    map[node, set[loc]] clones = ();
+
+    int diff = 2;
+
+    for (blockSize <- blockAST) {
+        for (a <- blockAST[blockSize]) {
+            for (offset <- [-diff .. diff + 1], blockSize + offset in blockAST) {
+                for (b <- blockAST[blockSize + offset]) {
+                    if (a != b && node _block:\block(_) := a && node other:\block(_) := b) {
+
+                        if (size(toSet(unsetRec(_block).statements) & toSet(unsetRec(other).statements)) > blockSize - 5) {
+                            clones[a]?{} += {a.src, b.src};
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    println(range(clones));
+
+    return <[], 0>;
+}
