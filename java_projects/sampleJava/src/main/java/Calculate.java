@@ -3,43 +3,22 @@ package main;
 
 public class Calculate {
 
+    Calculate(){
+        new Calculate();
+    }
+
     public static void main(String [] args) {
         System.out.println(false||true);
-
-        Integer test = 10;
-        Integer aInteger = 10;
-        Integer bInteger = 10;
-        Integer cInteger = 10;
-        Integer dInteger = 10;
-        Integer eInteger = 10;
-
-        /* */System.out.println("Test: " + test.toString());
-
-        // for(Integer iep = 0; iep < 10; iep++) { /* */
-        //     System.out.println(iep.toString());
-        //     for(Integer j = 0; j < 10; j++) {
-        //         System.out.println(iep.toString());
-        //     }
-        // }
-
-        for(Integer iep = 0; iep < 10; iep++) { /* */
-            System.out.println(iep.toString());
-        }
-        for(Integer j = 0; j < 10; j++) { /* */
-            System.out.println(j.toString());
-            System.out.println(j.toString());
-        }
     }
 
-    Calculate(){
+    public Integer add(Integer lhs, Integer rhs) {
+        return lhs + rhs;
+    }
+
+    public Integer type1(Integer x, Integer y) {
+        System.out.println("z");
+        System.out.println("y");
         System.out.println("x");
-    }
-
-    public Integer minus(Integer x, Integer y) {
-        System.out.println("z");
-        System.out.println("z");
-        System.out.println("z");
-        System.out.println("z");
 
         for(Integer iep = 0; iep < 10; iep++) { /* */
             System.out.println(iep.toString());
@@ -51,46 +30,35 @@ public class Calculate {
         return  x - y;
     }
 
-    public Integer minus(Integer x, Integer y) {
+    public Integer type2(Integer x, Integer y) {
 
-        System.out.println("z");
-        System.out.println("z");
-        System.out.println("z");
-        System.out.println("z");
+        System.out.println("hello");
+        System.out.println("42");
+        System.out.println("world");
 
-        for(Integer iep = 0; iep < 10; iep++) { /* */
-            System.out.println(iep.toString());
-            for(Integer j = 0; j < 10; j++) { /* */
-                System.out.println(j.toString());
-                System.out.println(j.toString());
+        Integer World = 42;
+
+        for(Integer i = 0; i < 10; i++) { /* */
+            System.out.println(i.toString());
+            for(Integer f = 0; f < 10; f++) { /* */
+                System.out.println(f.toString());
+                System.out.println(f.toString());
             }
         }
         return  x - y;
     }
 
-    public Double minus(Double x, Double y) {
-        System.out.println("s");
-        for(Integer iep = 0; iep < 10; iep++) { /* */
-            System.out.println(iep.toString());
-            for(Integer j = 0; j < 10; j++) { /* */
-                System.out.println(j.toString());
-                System.out.println(j.toString());
-            }
+    public Double type3(Double x, Double y) {
+        Double result = 0.0;
+        result = x % y;
+        System.out.println(result);
+
+        if (result > 0) {
+            result *= 2;
+        } else {
+            result *= 3;
         }
-        return  x - y;
-    }
 
-    public Integer add(Integer x, Integer y) {
-        return x + y;
+        return  result - y;
     }
-
-    // public static Integer add2(Integer x, Integer y) {
-    //     return x + y;
-    // }
-
-/*
-    public static Integer add3(Integer x, Integer y) {
-        return x + y;
-    }
-*/
 }
