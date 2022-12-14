@@ -3,6 +3,7 @@ module Main
 import IO;
 import String;
 import List;
+import Location;
 import Node;
 import DateTime;
 import Map;
@@ -32,13 +33,25 @@ void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
     <totalCodeLines, _> = mainLoC(project);
 
-    // <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
-    // <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
-    // println(totalCodeLines);
-    // println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
-    // dumpToJson("Type1Clones.json",type1CloneList);
-    // // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
-    // iprintln(type1CloneList);
+    type1Map = getType1Clones(asts, cloneWeight);
+    type1CloneList = getSlocs(type1Map);
+    int nrOfClones = getNumberOfClones(type1Map);
+    println("Clones: <nrOfClones>");
+
+    <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
+    println(totalCodeLines);
+    println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
+    dumpToJson("Type1Clones.json",type1CloneList);
+    // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
+
+    println("-------");
+    iprintln(type1CloneList);
+    // for (key <- type1Map) {
+    //     if (size(type1Map[key]) > 1 ){
+    //         println("  : <type1Map[key]>");
+    //     }
+    // }
+    println("-------");
 
 
 
@@ -50,8 +63,8 @@ void analyseProject(loc project, int cloneWeight) {
     // // dumpToJson("Type2Clones.json",type2CloneList);
     // iprintln(type2CloneList);
 
-    <type3CloneList, nrOfType3Clones> = getType3Clones(asts, cloneWeight);
-    iprintln(type3CloneList);
+    // <type3CloneList, nrOfType3Clones> = getType3Clones(asts, cloneWeight);
+    // iprintln(type3CloneList);
 
     // showInteractiveContent(barChart(barChartDataType2,title="Type 2 Clones", colorMode=\dataset()));
 
@@ -63,10 +76,11 @@ void analyseProject(loc project, int cloneWeight) {
 
 
 void main() {
-    int cloneWeight = 5;
+    int cloneWeight = 20;
     datetime startTime = now();
     // analyseProject(|project://tinyJava|, cloneWeight);
-    analyseProject(|project://sampleJava|, cloneWeight);
+    // analyseProject(|project://sampleJava|, cloneWeight);
+    analyseProject(|project://jorritJava|, cloneWeight);
     // analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));

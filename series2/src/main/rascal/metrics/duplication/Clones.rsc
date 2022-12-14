@@ -142,7 +142,7 @@ map[value, set[loc]] getDuplicates(map[value, set[loc]] occurrences, int treshol
     return result;
 }
 
-public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, int weight) {
+public map[value, set[loc]] getType1Clones(list[Declaration] asts, int weight) {
     map[value, set[loc]] nodeAst = ();
     list[tuple[value, loc]] subsumptions = [];
 
@@ -152,19 +152,82 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
             blockSize = size(impl);
             // TODO move hardcoded value to parameters
             cloneBlockSize = 2;
-            if (_Node.src? && blockSize > cloneBlockSize) {
-                for (init <- [0 .. blockSize - cloneBlockSize + 1]) {
-                    tempBlock = slice(impl, init, cloneBlockSize);
-                    tempNode = block(tempBlock);
-                    tempSrc = cover([stmt.src | stmt <- tempBlock]);
-                    tempNode.src = tempSrc;
+            if (_Node.src? && getNumberOfChildNodes(_Node, weight) > weight) {
+                // println(_Node.src);
+                list[loc] locList = [];
+                top-down visit(_Node) {
+                    case iff: \if(_,_,_) : {
+                        locList += iff.src;
+                    }
+                    case iff: \if(_,_) : {
+                        // iprintln(iff.src);
+                        locList += iff.src;
+                    }
 
-                    nodeAst = initOrIncrMap(nodeAst, tempNode);
+                    case forr: \for(_,_,_,_) : {
+                        iprintln(forr.src);
+                        locList += forr.src;
+                        println("FORRR2");
+                    }
+
+                    case forr: \for(_,_,_) : {
+                        // iprintln(iff.src);
+                        println("FORRR");
+                        locList += forr.src;
+                    }
+
+                    case _y: \declarationStatement(Declaration declaration) : {
+                         if (_y.src?) {
+                            bool testt = false;
+                            // iprintln(_y.src);
+                            for (item <- locList) {
+                                if(isStrictlyContainedIn(_y.src, item)) {
+                                    testt = true;
+                                    break;
+                                }
+                            }
+                            if(testt == false) {
+                                locList += _y.src;
+                            }
+                        }
+                    }
+                    case _x: \expressionStatement(Expression stmt) :  {
+                        if (_x.src?  ){
+                            if (_x.src == |java+compilationUnit:///src/main/java/Barracuda.java|(682,35,<35,12>,<35,47>)){
+                                println("SOURCE <_x.src>");
+                            }
+                            bool testt = false;
+                            for (item <- locList) {
+                                if(isStrictlyContainedIn(_x.src, item)) {
+                                    testt = true;
+                                    break;
+                                }
+                            }
+                            if(testt == false) {
+                                locList += _x.src;
+                            }
+                        }
+                    }
                 }
+                // for (is <- locList) {
+                //     iprintln(is);
+
+                // }
+                // for (init <- [0 .. blockSize - cloneBlockSize + 1]) {
+                //     tempBlock = slice(impl, init, cloneBlockSize);
+
+                //     tempNode = block(tempBlock);
+
+                //     tempSrc = cover([stmt.src | stmt <- tempBlock]);
+                //     tempNode.src = tempSrc;
+                //     // iprintln(tempNode.src);
+                //     // exit()
+                //     nodeAst = initOrIncrMap(nodeAst, tempNode);
+                // }
             }
         }
     }
-
+    exit();
     nodeAst = getDuplicates(nodeAst);
 
     nodeAst = mergeBlocks(nodeAst);
@@ -192,11 +255,7 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
         nodeAst[unsetRec(sub.n)] -= {sub.src};
     }
 
-    int nrOfClones = getNumberOfClones(nodeAst);
-
-    println("Clones: <nrOfClones>");
-
-    return <getSlocs(nodeAst), nrOfClones>;
+    return nodeAst;
 }
 
 public tuple[rel[str, int], int] convertToCharData(lrel[int,list[value]] cloneList){
