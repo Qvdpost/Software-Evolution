@@ -150,16 +150,34 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
     top-down visit(asts) {
         case _Node: \block(impl): {
             blockSize = size(impl);
-            // TODO move hardcoded value to parameters
-            cloneBlockSize = 2;
-            if (_Node.src? && blockSize > cloneBlockSize) {
-                for (init <- [0 .. blockSize - cloneBlockSize + 1]) {
-                    tempBlock = slice(impl, init, cloneBlockSize);
-                    tempNode = block(tempBlock);
-                    tempSrc = cover([stmt.src | stmt <- tempBlock]);
-                    tempNode.src = tempSrc;
+            for (init <- [0 .. blockSize - 1]) {
+                subImpl = slice(impl, init, blockSize - init);
+                subNode = block(subImpl);
+                subNode.src = _Node.src;
 
+                if (subNode.src? && getNumberOfChildNodes(subNode, weight) >= weight) {
+                    tempBlock = [head(subImpl)];
+                    subImpl = tail(subImpl);
+                    tempNode = block(tempBlock);
+
+                    // Aggregate a subsequence of the correct size.
+                    while (getNumberOfChildNodes(tempNode, weight) < weight) {
+                        tempBlock += [head(subImpl)];
+                        subImpl = tail(subImpl);
+                        tempNode = block(tempBlock);
+                    }
+
+                    tempNode.src = cover([stmt.src | stmt <- tempBlock]);
                     nodeAst = initOrIncrMap(nodeAst, tempNode);
+
+                    // Continue with remaining subsequences.
+                    while (subImpl != []) {
+                        tempBlock += [head(subImpl)];
+                        subImpl = tail(subImpl);
+                        tempNode = block(tempBlock);
+                        tempNode.src = cover([stmt.src | stmt <- tempBlock]);
+                        nodeAst = initOrIncrMap(nodeAst, tempNode);
+                    }
                 }
             }
         }
