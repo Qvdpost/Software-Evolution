@@ -1,9 +1,22 @@
 [
-    [
-        11,
-        [
-            "|java+compilationUnit:///src/main/java/Calculate.java|(326,392,<19,8>,<30,22>)",
-            "|java+compilationUnit:///src/main/java/CalculateTwo.java|(338,392,<20,8>,<31,22>)"
+    {
+        "type1clones": [
+            {
+                "nrOfclones": 11,
+                "Sloc": 33,
+                "sources": [
+                    "|java+compilationUnit:///src/main/java/Calculate.java|(326,392,<19,8>,<30,22>)",
+                    "|java+compilationUnit:///src/main/java/CalculateTwo.java|(338,392,<20,8>,<31,22>)"
+                ]
+            },
+            {
+                "nrOfclones": 14,
+                "Sloc": 55,
+                "sources": [
+                    "|java+compilationUnit:///src/main/java/Calculate.java|(326,392,<19,8>,<30,22>)",
+                    "|java+compilationUnit:///src/main/java/CalculateTwo.java|(338,392,<20,8>,<31,22>)"
+                ]
+            }
         ]
-    ]
+    }
 ]
