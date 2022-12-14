@@ -78,7 +78,7 @@ map[str, map[loc, value]] explodeDuplicates(map[set[loc], value] duplicates) {
 
 map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
 
-    map[set[loc], value] invertedDuplicates = invertUnique(duplicates);
+    map[set[loc], value] invertedDuplicates = invert(duplicates);
     map[str, map[loc, value]] explodedInvertedDuplicates = explodeDuplicates(invertedDuplicates);
 
     // Bubble sort like algorithm to merge overlapping blocks of code.
@@ -98,6 +98,7 @@ map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
                     srcs = srcs[0 .. init] + [cover(pair)] + srcs[init + 2 .. ];
 
                     list[node] blockStms = [];
+                    // Merge the two blocks.
                     if (\block(l) := explodedInvertedDuplicates[srcFile][pair[0]] && \block(r) := explodedInvertedDuplicates[srcFile][pair[1]]) {
                         lh = [];
                         while (!([l*, *rh] := r)) {
@@ -106,15 +107,19 @@ map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
                         }
                         blockStms = lh + r;
                     }
+
                     if (isEmpty(blockStms)) {
                         continue;
                     }
+
                     newBlock = block(blockStms);
                     // Adds the new block of code to the exploded duplicate blocks
                     explodedInvertedDuplicates[srcFile][cover(pair)] = newBlock;
 
                     // TODO: Check of het mergen niet blokjes overslaat die ook een clone class kunnen opleveren. eg. index 2-3 samen.
                     // Filters values of merged sources from original duplicates
+                    if (explodedInvertedDuplicates[srcFile][pair[0]] notin duplicates)
+                        println(pair[0]);
                     duplicates[explodedInvertedDuplicates[srcFile][pair[0]]]?{} -= {pair[0]};
                     duplicates[explodedInvertedDuplicates[srcFile][pair[1]]]?{} -= {pair[1]};
 
