@@ -32,13 +32,20 @@ void analyseProject(loc project, int cloneWeight) {
     <model, asts> = getASTs(project);
     <totalCodeLines, _> = mainLoC(project);
 
-    <type1CloneList, nrOfClones> = getType1Clones(asts, cloneWeight);
+    type1Map = getType1Clones(asts, cloneWeight);
+    type1CloneList = getSlocs(type1Map);
+    int nrOfClones = getNumberOfClones(type1Map);
+    println("Clones: <nrOfClones>");
+
     <barChartData, nrOfClonedLines> = convertToCharData(type1CloneList);
     println(totalCodeLines);
     println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
-    dumpToJson("Type1Clones.json",type1CloneList);
+    // dumpToJson("Type1Clones.json",type1CloneList);
     // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
+
+    println("-------");
     iprintln(type1CloneList);
+    println("-------");
 
 
 

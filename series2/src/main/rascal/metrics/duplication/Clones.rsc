@@ -142,7 +142,7 @@ map[value, set[loc]] getDuplicates(map[value, set[loc]] occurrences, int treshol
     return result;
 }
 
-public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, int weight) {
+public map[value, set[loc]] getType1Clones(list[Declaration] asts, int weight) {
     map[value, set[loc]] nodeAst = ();
     list[tuple[value, loc]] subsumptions = [];
 
@@ -210,11 +210,7 @@ public tuple[lrel[int,list[value]], int] getType1Clones(list[Declaration] asts, 
         nodeAst[unsetRec(sub.n)] -= {sub.src};
     }
 
-    int nrOfClones = getNumberOfClones(nodeAst);
-
-    println("Clones: <nrOfClones>");
-
-    return <getSlocs(nodeAst), nrOfClones>;
+    return nodeAst;
 }
 
 public tuple[rel[str, int], int] convertToCharData(lrel[int,list[value]] cloneList){
