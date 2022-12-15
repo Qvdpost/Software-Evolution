@@ -49,13 +49,21 @@ void analyseProject(loc project, int cloneWeight) {
 
 
 
-    // asts = rewriteAST(asts);
-    // <type2CloneList, nrOfType2Clones> = getType1Clones(asts, cloneWeight);
-    // <barChartDataType2, nrOfClonedLinesType2> = convertToCharData(type2CloneList);
-    // println(totalCodeLines);
-    // println("nrOfClonedLines: <nrOfClonedLinesType2>\nPercentage: <getPercentage(nrOfClonedLinesType2,totalCodeLines)>%");
-    // // dumpToJson("Type2Clones.json",type2CloneList);
-    // iprintln(type2CloneList);
+    asts = rewriteAST(asts);
+    type2Map = getType1Clones(asts, cloneWeight);
+    type2CloneList = getSlocs(type2Map);
+    nrOfClones = getNumberOfClones(type2Map);
+    println("Clones: <nrOfClones>");
+
+    <barChartData, nrOfClonedLines> = convertToCharData(type2CloneList);
+    println(totalCodeLines);
+    println("nrOfClonedLines: <nrOfClonedLines>\nPercentage: <getPercentage(nrOfClonedLines,totalCodeLines)>%");
+    // dumpToJson("Type1Clones.json",type1CloneList);
+    // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
+
+    println("-------");
+    iprintln(type2CloneList);
+    println("-------");
 
     // <type3CloneList, nrOfType3Clones> = getType3Clones(asts, cloneWeight);
     // iprintln(type3CloneList);
