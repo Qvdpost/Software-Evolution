@@ -1,14 +1,13 @@
 package main;
 
-
 public class CalculateTwo {
 
-    public static void main(String [] args) {
-        System.out.println(false||true);
+    public static void main(String[] args) {
+        System.out.println(false || true);
 
     }
 
-    CalculateTwo(){
+    CalculateTwo() {
         new CalculateTwo();
     }
 
@@ -21,16 +20,36 @@ public class CalculateTwo {
         System.out.println("y");
         System.out.println("x");
 
-        for(Integer iep = 0; iep < 10; iep++) { /* */
+        for (Integer iep = 0; iep < 10; iep++) { /* */
             System.out.println(iep.toString());
-            for(Integer j = 0; j < 10; j++) { /* */
+            for (Integer j = 0; j < 10; j++) { /* */
                 System.out.println(j.toString());
                 System.out.println(j.toString());
             }
         }
-        return  x - y;
+        return x - y;
     }
 
+    public Integer type1OrphanClone(Integer x, Integer y) {
+        for (Integer iep = 0; iep < 10; iep++) { /* */
+            iep += 5;
+            iep += 10;
+            iep += 13;
+        }
+    }
+
+    public Integer type1OrphanedClone(Integer x, Integer y) {
+        System.out.println("z");
+        System.out.println("y");
+        System.out.println("x");
+
+        for (Integer iep = 0; iep < 10; iep++) { /* */
+            iep += 5;
+            iep += 10;
+            iep += 13;
+        }
+        return x * y;
+    }
 
     public Integer type2Clone(Integer x, Integer y) {
 
@@ -40,14 +59,14 @@ public class CalculateTwo {
 
         Integer Whale = 96;
 
-        for(Integer iterator = 0; iterator < 10; iterator++) { /* */
+        for (Integer iterator = 0; iterator < 10; iterator++) { /* */
             System.out.println(iterator.toString());
-            for(Integer j = 0; j < 10; j++) { /* */
+            for (Integer j = 0; j < 10; j++) { /* */
                 System.out.println(j.toString());
                 System.out.println(j.toString());
             }
         }
-        return  x - y;
+        return x - y;
     }
 
     public Double type3Clone(Double x, Double y) {
@@ -57,7 +76,6 @@ public class CalculateTwo {
         result = x % y;
         System.out.println(result);
 
-
         if (result > 0) {
             result *= 2;
         } else {
@@ -66,7 +84,7 @@ public class CalculateTwo {
 
         System.out.println(result);
 
-        return  result - y;
+        return result - y;
     }
 
     public Double type3ClonePartTwo(Double x, Double y) {
@@ -81,6 +99,6 @@ public class CalculateTwo {
         } else {
             result *= 3;
         }
-        return  result - y;
+        return result - y;
     }
 }
