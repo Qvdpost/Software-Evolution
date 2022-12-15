@@ -54,11 +54,12 @@ public int getNumberOfClones(map[value, set[loc]] cloneMap){
     return counter;
 }
 
-public void printCloneMap(lrel[int,list[value]] cloneMap){
-    for ( <amountCloneLines, locs> <- cloneMap) {
-        println("<amountCloneLines>");
-        for (l<- locs) {
-            println(l);
+public void printCloneMap(map[value, set[loc]] cloneMap){
+    for ( key <- cloneMap) {
+        if ( size(cloneMap[key]) > 1){
+            for (l<- cloneMap[key]) {
+                iprintln(l);
+            }
         }
     }
 }
@@ -147,7 +148,7 @@ map[value, set[loc]] getDuplicates(map[value, set[loc]] occurrences, int treshol
     return result;
 }
 
-public map[value, set[loc]] getType1Clones(list[Declaration] asts, int weight) {
+public map[value, set[loc]] getCloneMap(list[Declaration] asts, int weight) {
     map[value, set[loc]] nodeAst = ();
     list[tuple[value, loc]] subsumptions = [];
 
@@ -218,18 +219,16 @@ public map[value, set[loc]] getType1Clones(list[Declaration] asts, int weight) {
     return nodeAst;
 }
 
-public tuple[rel[str, int], int] convertToCharData(lrel[int,list[value]] cloneList){
+public rel[str, int] convertToCharData(lrel[int,list[value]] cloneList){
     barChartData = {<"",0>};
-    int nrOfClonedLines = 0;
 
     for (<amount, locs> <- cloneList) {
         barChartData += {<"0<amount>", size(locs)>};
-        nrOfClonedLines = amount * size(locs);
     }
 
     barChartData = barChartData - {<"",0>};
 
-    return <barChartData,nrOfClonedLines>;
+    return barChartData;
 }
 
 private int getNumberOfChildNodes(node n, int weight) {
