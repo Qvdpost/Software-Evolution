@@ -46,7 +46,7 @@ tuple[map[str, map[str,value]], int, int] addCloneClassToJson(str CloneClassType
     for (key <- cloneMap) {
         int cloneSize = size(cloneMap[key]);
 
-        if (cloneSize > 1) {
+        if (cloneSize > 0) {
             counter += 1;
             slocs = countLoC(getFirstFrom(cloneMap[key]));
             cloneList += (
