@@ -84,7 +84,7 @@ void analyseProject(loc project, int cloneWeight) {
     // Get map containing all  Type 1 clones
     type1Map = getCloneMap(asts, cloneWeight);
 
-    iprintln(range(type1Map));
+    // iprintln(range(type1Map));
 
     // Rewrite to map to get output for graph data
     type1CloneList = getSlocs(type1Map);
@@ -105,42 +105,44 @@ void analyseProject(loc project, int cloneWeight) {
     // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
 
     // Rewrite AST for type 2 clones
-    // asts = rewriteAST(asts);
+    asts = rewriteAST(asts);
 
-    // type2Map = getCloneMap(asts, cloneWeight);
-    // type2CloneList = getSlocs(type1Map);
-    // barChartData = convertToCharData(type2CloneList);
+    type2Map = getCloneMap(asts, cloneWeight);
+    type2CloneList = getSlocs(type1Map);
+    barChartData = convertToCharData(type2CloneList);
 
-    // <type2JsonContent, nrOfClonedLines, nrOfCloneClasses> = addCloneClassToJson(jsonContents,"type2Clones", type2Map);
-    // outputList += type2JsonContent;
+    <type2JsonContent, nrOfClonedLines, nrOfCloneClasses> = addCloneClassToJson(jsonContents,"type2Clones", type2Map);
+    outputList += type2JsonContent;
 
-    // nrOfClones = getNumberOfClones(type2Map);
-    // println(left("| Nr. of type 2 clones:",30) + left("| <nrOfClones>",9) + "|");
-    // println(left("| Nr. of type 2 clone classes:",30) + left("| <nrOfCloneClasses>",9) + "|");
-    // println(left("| Nr. of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
-    // println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
+    nrOfClones = getNumberOfClones(type2Map);
+    println(left("| Nr. of type 2 clones:",30) + left("| <nrOfClones>",9) + "|");
+    println(left("| Nr. of type 2 clone classes:",30) + left("| <nrOfCloneClasses>",9) + "|");
+    println(left("| Nr. of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
+    println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
 
-    // println("----------------------------------------\n");
-    // println("Type  3:");
-    // println("----------------------------------------");
+    println("----------------------------------------\n");
+    println("Type  3:");
+    println("----------------------------------------");
 
-    // <type3Clones, nrOfType3Clones> = getType3Clones(asts, cloneWeight);
-    // // nrOfClones = getNumberOfClones(type3Clones);
+    type3Map = getType3Clones(asts, cloneWeight);
+    nrOfClones = getNumberOfClones(type3Map);
+    <type3JsonContent, nrOfClonedLines, nrOfCloneClasses> = addCloneClassToJson(jsonContents,"type3Clones", type3Map);
+    outputList += type3JsonContent;
 
-    // // println(left("| Number of type 3 clones:",30) + left("| <nrOfType3Clones>",9) + "|");
-    // // println(left("| Number of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
-    // // println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
-    // // outputList += addCloneClassToJson(jsonContents,"type3Clones", type3Map);
+    println(left("| Nr. of type 3 clones:",30) + left("| <nrOfClones>",9) + "|");
+    println(left("| Nr. of type 3 clone classes:",30) + left("| <nrOfCloneClasses>",9) + "|");
+    println(left("| Nr. of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
+    println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
 
-    // println("----------------------------------------\n");
+    println("----------------------------------------\n");
 
-    // // Add project data and write all clones to a JSON file
-    // outputList = insertAt(outputList,0,(
-    //     "ProjectData" : (
-    //             "ProjectName" : "<project>",
-    //             "TotalSloc" : totalCodeLines
-    //         )
-    // ));
+    // Add project data and write all clones to a JSON file
+    outputList = insertAt(outputList,0,(
+        "ProjectData" : (
+                "ProjectName" : "<project>",
+                "TotalSloc" : totalCodeLines
+            )
+    ));
 
     dumpToJson("out.json", outputList);
 
@@ -154,7 +156,13 @@ void analyseProject(loc project, int cloneWeight) {
     // println("Type  2:");
     // println("----------------------------------------");
 
-    // printCloneMap(type1Map);
+    // printCloneMap(type2Map);
+
+    println("----------------------------------------\n");
+    println("Type  3:");
+    println("----------------------------------------");
+
+    printCloneMap(type3Map);
 }
 
 

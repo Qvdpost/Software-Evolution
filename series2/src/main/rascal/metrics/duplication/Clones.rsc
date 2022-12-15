@@ -52,12 +52,10 @@ public int getNumberOfClones(map[value, set[loc]] cloneMap){
 
 public void printCloneMap(map[value, set[loc]] cloneMap){
     for ( key <- cloneMap) {
-        if ( size(cloneMap[key]) > 1){
-            for (l<- cloneMap[key]) {
-                iprintln(l);
-            }
-            iprintln("----------");
+        for (l<- cloneMap[key]) {
+            iprintln(l);
         }
+        iprintln("----------");
     }
 }
 
