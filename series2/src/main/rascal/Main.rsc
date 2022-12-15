@@ -118,29 +118,41 @@ void analyseProject(loc project, int cloneWeight) {
     println(left("| Nr. of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
     println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
 
-    println("----------------------------------------\n");
-    println("Type  3:");
-    println("----------------------------------------");
+    // println("----------------------------------------\n");
+    // println("Type  3:");
+    // println("----------------------------------------");
 
-    <type3Clones, nrOfType3Clones> = getType3Clones(asts, cloneWeight);
-    // nrOfClones = getNumberOfClones(type3Clones);
+    // <type3Clones, nrOfType3Clones> = getType3Clones(asts, cloneWeight);
+    // // nrOfClones = getNumberOfClones(type3Clones);
 
-    // println(left("| Number of type 3 clones:",30) + left("| <nrOfType3Clones>",9) + "|");
-    // println(left("| Number of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
-    // println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
-    // outputList += addCloneClassToJson(jsonContents,"type3Clones", type3Map);
+    // // println(left("| Number of type 3 clones:",30) + left("| <nrOfType3Clones>",9) + "|");
+    // // println(left("| Number of lines cloned:",30) + left("| <nrOfClonedLines>",9) + "|");
+    // // println(left("| Percentage of lines cloned:",30) + left("| <getPercentage(nrOfClonedLines,totalCodeLines)>%",9) + "|");
+    // // outputList += addCloneClassToJson(jsonContents,"type3Clones", type3Map);
 
-    println("----------------------------------------\n");
+    // println("----------------------------------------\n");
 
-    // Add project data and write all clones to a JSON file
-    outputList = insertAt(outputList,0,(
-        "ProjectData" : (
-                "ProjectName" : "<project>",
-                "TotalSloc" : totalCodeLines
-            )
-    ));
+    // // Add project data and write all clones to a JSON file
+    // outputList = insertAt(outputList,0,(
+    //     "ProjectData" : (
+    //             "ProjectName" : "<project>",
+    //             "TotalSloc" : totalCodeLines
+    //         )
+    // ));
 
     dumpToJson("out.json", outputList);
+
+    // println("----------------------------------------\n");
+    // println("Type  1:");
+    // println("----------------------------------------");
+
+    // printCloneMap(type1Map);
+
+    // println("----------------------------------------\n");
+    // println("Type  2:");
+    // println("----------------------------------------");
+
+    // printCloneMap(type1Map);
 }
 
 
