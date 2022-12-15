@@ -119,10 +119,8 @@ map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
 
                     // TODO: Check of het mergen niet blokjes overslaat die ook een clone class kunnen opleveren. eg. index 2-3 samen.
                     // Filters values of merged sources from original duplicates
-                    if (explodedInvertedDuplicates[srcFile][pair[0]] notin duplicates)
-                        println(pair[0]);
-                    duplicates[explodedInvertedDuplicates[srcFile][pair[0]]]?{} -= {pair[0]};
-                    duplicates[explodedInvertedDuplicates[srcFile][pair[1]]]?{} -= {pair[1]};
+                    duplicates[explodedInvertedDuplicates[srcFile][pair[0]]] -= {pair[0]};
+                    duplicates[explodedInvertedDuplicates[srcFile][pair[1]]] -= {pair[1]};
 
                     // Adds the new block to the original duplicates
                     if (newBlock notin duplicates) {
@@ -249,7 +247,7 @@ bool isSimilar(set[node] a, set[node] b) {
     return (2 * size(a & b) / toReal(2 * size(a & b) + size(a - b) + size(b - a))) > 0.9;
 }
 
-public tuple[lrel[int,list[value]], int] getType3Clones(list[Declaration] asts, int weight) {
+public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
     map[int, map[node, loc]] blockAST = ();
     list[tuple[value, loc]] subsumptions = [];
 
@@ -285,7 +283,5 @@ public tuple[lrel[int,list[value]], int] getType3Clones(list[Declaration] asts, 
         }
     }
 
-    println(range(clones));
-
-    return <[], 0>;
+    return clones;
 }
