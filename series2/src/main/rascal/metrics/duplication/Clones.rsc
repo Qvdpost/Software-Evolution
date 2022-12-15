@@ -31,10 +31,8 @@ map[value, set[loc]] initOrIncrMap(map[value, set[loc]] mapping, node _Node) {
 public lrel[int,list[value]] getSlocs(map[value, set[loc]] cloneMap){
     map[int, list[value]] cleanMap = ();
     for (key <- cloneMap){
-        if (size(cloneMap[key]) > 1) {
-            for (src <- cloneMap[key]) {
-                cleanMap[countLoC(src)] ? [] += [src];
-            }
+        for (src <- cloneMap[key]) {
+            cleanMap[countLoC(src)] ? [] += [src];
         }
     }
     sortedList = sort(toList(cleanMap));
@@ -45,10 +43,8 @@ public lrel[int,list[value]] getSlocs(map[value, set[loc]] cloneMap){
 public int getNumberOfClones(map[value, set[loc]] cloneMap){
     int counter = 0;
     for ( key <- cloneMap) {
-        if (size(cloneMap[key]) > 1) {
-            for (_ <- cloneMap[key]) {
-                counter += 1;
-            }
+        for (_ <- cloneMap[key]) {
+            counter += 1;
         }
     }
     return counter;
@@ -60,6 +56,7 @@ public void printCloneMap(map[value, set[loc]] cloneMap){
             for (l<- cloneMap[key]) {
                 iprintln(l);
             }
+            iprintln("----------");
         }
     }
 }
@@ -152,12 +149,18 @@ public map[value, set[loc]] getCloneMap(list[Declaration] asts, int weight) {
 
     // Add all subtrees to a HashMap starting from a certain weight
     top-down visit(asts) {
-        case _Node: \block(impl): {
+        case _Node: \method(_,name,_,_, imp: \block(impl)) : {
             blockSize = size(impl);
+
+            // Add entire methods to the map to find short functions that are copied:
+            if(_Node.decl?) {
+                nodeAst = initOrIncrMap(nodeAst, _Node);
+            }
+
             for (init <- [0 .. blockSize - 1]) {
                 subImpl = slice(impl, init, blockSize - init);
                 subNode = block(subImpl);
-                subNode.src = _Node.src;
+                subNode.src = imp.src;
 
                 if (subNode.src? && getNumberOfChildNodes(subNode, weight) >= weight) {
                     tempBlock = [head(subImpl)];
