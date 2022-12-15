@@ -28,7 +28,7 @@ bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
     return false;
 }
 
-tuple[map[str, map[str,value]], int, int] addCloneClassToJson(map[str, map[str,value]] jsonOutput, str CloneClassType,  map[value, set[loc]] cloneMap) {
+tuple[map[str, map[str,value]], int, int] addCloneClassToJson(str CloneClassType,  map[value, set[loc]] cloneMap) {
     // Initialize content of a type of clones
     map[str, map[str,value]] cloneClassContent = ( CloneClassType : (
             "TotalClonedSloc" : 0,
@@ -62,9 +62,9 @@ tuple[map[str, map[str,value]], int, int] addCloneClassToJson(map[str, map[str,v
     cloneClassContent[CloneClassType]["NrOfCloneClasses"] = counter;
     cloneClassContent[CloneClassType]["TotalClonedSloc"] = totalCloneLoc;
     cloneClassContent[CloneClassType]["Clones"] = cloneList;
-    jsonOutput[CloneClassType] = cloneClassContent;
+
     // return JSON report of type 1/2/3 clone class
-    return <jsonOutput, totalCloneLoc, counter>;
+    return <cloneClassContent, totalCloneLoc, counter>;
 }
 
 map[str,map[str,value]] prettyPrintCloneMap(str cloneType, map[value, set[loc]] cloneMap, int totalCodeLines) {
@@ -72,7 +72,7 @@ map[str,map[str,value]] prettyPrintCloneMap(str cloneType, map[value, set[loc]] 
 
     println("Type <cloneType>:");
     println("----------------------------------------");
-    <jsonContent, nrOfClonedLines, nrOfCloneClasses> = addCloneClassToJson(jsonContents,"type<cloneType>Clones", cloneMap);
+    <jsonContent, nrOfClonedLines, nrOfCloneClasses> = addCloneClassToJson("type<cloneType>Clones", cloneMap);
 
     // Print statistics
     int nrOfClones = getNumberOfClones(cloneMap);
