@@ -256,7 +256,7 @@ public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
     top-down visit(asts) {
         case _Node: \block(impl): {
             blockSize = size(impl);
-            if (_Node.src? && blockSize > 3) {
+            if (_Node.src? && getNumberOfChildNodes(_Node, weight) >= weight) {
                 if (blockSize notin blockAST){ blockAST[blockSize] = (); }
 
                 blockAST[blockSize][_Node] = _Node.src;
@@ -275,13 +275,43 @@ public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
             for (offset <- [-diff .. diff + 1], blockSize + offset in blockAST) {
                 for (b <- blockAST[blockSize + offset]) {
                     if (a != b) {
-                        if (isSimilar(toSet(unsetRec(a).statements), toSet(unsetRec(b).statements))) {
-                            clones[a]?{} += {a.src, b.src};
+                        unset_a = unsetRec(a);
+                        unset_b = unsetRec(b);
+                        if (isSimilar(toSet(unset_a.statements), toSet(unset_b.statements))) {
+                            if (unset_a in clones)
+                                clones[unset_a] += {a.src, b.src};
+                            elseif (unset_b in clones)
+                                clones[unset_b] += {a.src, b.src};
+                            else
+                                clones[unset_a] = {a.src, b.src};
                         }
                     }
                 }
             }
         }
+    }
+
+    for ( key <- clones) {
+        if (size(clones[key]) > 1) {
+            for (source <- clones[key]) {
+                // loop again over the same map
+                for ( keyTwo <- clones) {
+                    if (size(clones[keyTwo]) > 1) {
+                        for (src <- clones[keyTwo]) {
+                            if(isStrictlyContainedIn(source, src)) {
+                                subsumptions += <key, source>;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Remove all subsumptions from the tree
+    for (tuple[node n, loc src] sub <- subsumptions) {
+        clones[unsetRec(sub.n)] -= {sub.src};
     }
 
     return clones;
