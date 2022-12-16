@@ -18,6 +18,7 @@ import metrics::volume::LoC;
 import lang::json::IO;
 import vis::Charts;
 import util::IDEServices;
+import output::Generate;
 
 bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
     println("START: <loopSource>");
@@ -97,7 +98,9 @@ void analyseProject(loc project, int cloneWeight) {
     println("Project total lines of code: <totalCodeLines>");
 
     // Get map containing all  Type 1 clones
-    type1Map = getCloneMap(asts, cloneWeight);
+    map[value, set[loc]] type1Map = getCloneMap(asts, cloneWeight);
+
+    genForceGraph(model, type1Map);
 
     // Rewrite to map to get output for graph data
     type1CloneList = getSlocs(type1Map);
@@ -107,27 +110,27 @@ void analyseProject(loc project, int cloneWeight) {
     // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
 
     // Rewrite AST for type 2 clones
-    asts = rewriteAST(asts);
+    // asts = rewriteAST(asts);
 
-    type2Map = getCloneMap(asts, cloneWeight);
-    type2CloneList = getSlocs(type1Map);
-    barChartData = convertToCharData(type2CloneList);
+    // type2Map = getCloneMap(asts, cloneWeight);
+    // type2CloneList = getSlocs(type1Map);
+    // barChartData = convertToCharData(type2CloneList);
 
-    outputList += prettyPrintCloneMap("2", type2Map, totalCodeLines);
+    // outputList += prettyPrintCloneMap("2", type2Map, totalCodeLines);
 
-    // Type 3
-    type3Map = getType3Clones(asts, cloneWeight);
-    outputList += prettyPrintCloneMap("3", type3Map, totalCodeLines);
+    // // Type 3
+    // type3Map = getType3Clones(asts, cloneWeight);
+    // outputList += prettyPrintCloneMap("3", type3Map, totalCodeLines);
 
-    // Add project data and write all clones to a JSON file
-    outputList = insertAt(outputList,0,(
-        "ProjectData" : (
-                "ProjectName" : "<project>",
-                "TotalSloc" : totalCodeLines
-            )
-    ));
+    // // Add project data and write all clones to a JSON file
+    // outputList = insertAt(outputList,0,(
+    //     "ProjectData" : (
+    //             "ProjectName" : "<project>",
+    //             "TotalSloc" : totalCodeLines
+    //         )
+    // ));
 
-    dumpToJson("out.json", outputList);
+    // dumpToJson("out.json", outputList);
 
     // println("----------------------------------------\n");
     // println("Type  1:");
@@ -153,8 +156,8 @@ void main() {
     int cloneWeight = 20;
     datetime startTime = now();
     // analyseProject(|project://tinyJava|, cloneWeight);
-    analyseProject(|project://sampleJava|, cloneWeight);
-    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    // analyseProject(|project://sampleJava|, cloneWeight);
+    analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }
