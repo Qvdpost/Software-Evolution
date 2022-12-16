@@ -20,14 +20,6 @@ import vis::Charts;
 import util::IDEServices;
 import output::Generate;
 
-bool hasClones(Statement forLoop, list[Declaration] asts, value loopSource){
-    println("START: <loopSource>");
-    visit(asts){
-         case loop: \for(_,_,_,_): forLoop := loop ? println("\tyeah <loop.src>") : println("\tnop <loop.src>");
-    }
-
-    return false;
-}
 
 tuple[map[str, map[str,value]], int, int] addCloneClassToJson(str CloneClassType,  map[value, set[loc]] cloneMap) {
     // Initialize content of a type of clones
@@ -47,7 +39,7 @@ tuple[map[str, map[str,value]], int, int] addCloneClassToJson(str CloneClassType
     for (key <- cloneMap) {
         int cloneSize = size(cloneMap[key]);
 
-        if (cloneSize > 1) {
+        if (cloneSize > 0) {
             counter += 1;
             slocs = countLoC(getFirstFrom(cloneMap[key]));
             cloneList += (
