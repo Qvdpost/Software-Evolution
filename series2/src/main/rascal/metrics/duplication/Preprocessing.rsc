@@ -116,18 +116,19 @@ Declaration rewriteDecl(Declaration decl, map[str, int] var_occurrence) {
 }
 
 
-list[Declaration] rewriteAST(list[Declaration] asts) {
+list[Declaration] rewriteAST(list[Declaration] asts, bool indexing=false) {
 	list[Declaration] result = [];
 	// Modify ast for clone detection.
 	for (ast <- asts) {
 		int var_count = 0;
 		map[str, int] var_occurrence = ();
-		// visit (ast) {
-		// 	case \variable(name, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
-		// 	case \variable(name, _, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
-		// 	// case \simpleName(name): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
-		// 	case \parameter(_, name, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
-		// }
+		if (indexing) {
+			visit (ast) {
+				case \variable(name, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+				case \variable(name, _, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+				case \parameter(_, name, _): { if (name notin var_occurrence) { var_occurrence[name] = var_count; var_count += 1; } }
+			}
+		}
 
 		result += visit(ast){
 			case \Expression expr => rewriteExpr(expr, var_occurrence)
