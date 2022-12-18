@@ -50,6 +50,7 @@ public int getNumberOfClones(map[value, set[loc]] cloneMap){
     return counter;
 }
 
+// Explodes a map of sets of locations to clones into a single location pointing to that clone.
 map[str, map[loc, value]] explodeDuplicates(map[set[loc], value] duplicates) {
     map[str, map[loc, value]] result = ();
     for (locs <- duplicates) {
@@ -63,6 +64,7 @@ map[str, map[loc, value]] explodeDuplicates(map[set[loc], value] duplicates) {
     return result;
 }
 
+// Merges overlapping duplicate blocks into largest size clone classes.
 map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
 
     map[set[loc], value] invertedDuplicates = invert(duplicates);
@@ -76,7 +78,9 @@ map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
         int merged = 0;
 
         do {
+            // Bubble counter
             merged = 0;
+
             for (init <- [0 .. size(srcs) - 1], init < size(srcs) - 1 - merged) {
                 list[loc] pair = slice(srcs, init, 2);
 
@@ -103,7 +107,6 @@ map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
                     // Adds the new block of code to the exploded duplicate blocks
                     explodedInvertedDuplicates[srcFile][cover(pair)] = newBlock;
 
-                    // TODO: Check of het mergen niet blokjes overslaat die ook een clone class kunnen opleveren. eg. index 2-3 samen.
                     // Filters values of merged sources from original duplicates
                     duplicates[explodedInvertedDuplicates[srcFile][pair[0]]] -= {pair[0]};
                     duplicates[explodedInvertedDuplicates[srcFile][pair[1]]] -= {pair[1]};
@@ -122,6 +125,7 @@ map[value, set[loc]] mergeBlocks(map[value, set[loc]] duplicates) {
     return duplicates;
 }
 
+// Filters clones of size <threshold> in a map of clone to locations.
 map[value, set[loc]] getDuplicates(map[value, set[loc]] occurrences, int treshold=1) {
     map[value, set[loc]] result = ();
     for (block <- occurrences) {
@@ -272,8 +276,10 @@ public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
 
     map[node, set[loc]] clones = ();
 
-
+    // Compare blocks with each block in neighbouring buckets.
     for (blockSize <- blockAST) {
+
+        // Arbitary difference between block sizes in number of statements.
         int diff = toInt(blockSize * 0.4);
 
         for (a <- blockAST[blockSize]) {
@@ -282,6 +288,8 @@ public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
                     if (a != b) {
                         unset_a = unsetRec(a);
                         unset_b = unsetRec(b);
+
+                        // When similar try and aggregate on node a, such that collisions create a larger clone class.
                         if (isSimilar(toSet(unset_a.statements), toSet(unset_b.statements))) {
                             if (unset_a in clones)
                                 clones[unset_a] += {a.src, b.src};

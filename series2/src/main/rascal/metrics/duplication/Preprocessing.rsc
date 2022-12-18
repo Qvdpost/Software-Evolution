@@ -68,6 +68,7 @@ str replaceVarName(str word, Expression expr) {
         case \class(decl, _): return "__" + decl.path + "__";
 	}
 
+	// Leave unchanged if no case exists.
 	return "__" + word + "__";
 }
 
@@ -112,10 +113,13 @@ Declaration rewriteDecl(Declaration decl, map[str, int] var_occurrence) {
 }
 
 
+// Modify ast for clone detection.
 list[Declaration] rewriteAST(list[Declaration] asts, bool indexing=false) {
 	list[Declaration] result = [];
-	// Modify ast for clone detection.
+
 	for (ast <- asts) {
+
+		// Allows for tracing variables by numbering their occurrence.
 		int var_count = 0;
 		map[str, int] var_occurrence = ();
 		if (indexing) {
@@ -126,6 +130,7 @@ list[Declaration] rewriteAST(list[Declaration] asts, bool indexing=false) {
 			}
 		}
 
+		// Rewrite leaves appropriately.
 		result += visit(ast){
 			case \Expression expr => rewriteExpr(expr, var_occurrence)
 			case \Declaration decl => rewriteDecl(decl, var_occurrence)
