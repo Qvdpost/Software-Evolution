@@ -101,4 +101,31 @@ public class CalculateTwo {
         }
         return result - y;
     }
+
+	public void testOrderBy_nvarchar() throws Exception{
+		init();
+		Connection con = AllTests.getConnection();
+		Statement st = con.createStatement();
+		ResultSet rs;
+		String oldValue;
+
+		rs = st.executeQuery("SELECT * FROM " + table1 + " ORDER  by nv");
+
+		assertTrue( rs.next() );
+
+		oldValue = rs.getString("nv");
+		assertNull(oldValue);
+		assertTrue( rs.next() );
+		oldValue = rs.getString("nv");
+
+		int count = 1;
+		while(rs.next()){
+			assertTrue( String.CASE_INSENSITIVE_ORDER.compare( oldValue, rs.getString("nv") ) <= 0 );
+			oldValue = rs.getString("nv");
+			count++;
+		}
+		assertEquals( valueCount, count );
+	}
+
+
 }

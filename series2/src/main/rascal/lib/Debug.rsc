@@ -1,37 +1,29 @@
 module lib::Debug
 
 import IO;
-import lang::java::m3::Core;
-import lang::java::m3::AST;
 import lang::json::IO;
-import lib::Common;
-import lib::AstLib;
 
 
+// Create a file if it doesn't exist
 public void initFile(loc target) {
     touch(target);
     writeFile(target, "");
 }
 
-public void dumpMethodAst(loc target, list[Declaration] fullAst) {
-    initFile(target);
-    list[Declaration] methodAst = getMethodAst(fullAst);
-    iprintToFile(target, methodAst);
-}
-
-public void dumpGeneric(loc target, value values) {
-    initFile(target);
-    iprintToFile(target, values);
-}
-
-public void dumpToJson(loc target, value values) {
-    initFile(target);
-    writeJSON(target, values);
-}
-
+// Write given values to a JSON file.
 public void dumpToJson(str target, value values) {
-    loc targetFile = |project://series2/src/main/rascal|;
+    loc targetFile = |project://series2/src/main/rascal/output|;
     targetFile += target;
     initFile(targetFile);
     writeJSON(targetFile, values);
+}
+
+// Print all clone classes of a given clone map
+public void printCloneMap(map[value, set[loc]] cloneMap){
+    for ( key <- cloneMap) {
+        for (l<- cloneMap[key]) {
+            iprintln(l);
+        }
+        iprintln("----------");
+    }
 }

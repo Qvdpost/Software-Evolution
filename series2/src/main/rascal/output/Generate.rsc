@@ -5,7 +5,7 @@ import lang::json::IO;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
-import lib::AstLib;
+
 import lib::Debug;
 
 import Map;
@@ -26,7 +26,7 @@ list[map[str, value]] genLinks(str val, map[str, set[loc]] values) {
     return [genLink(src.path, val, size(values[val])) | src <- values[val]];
 }
 
-public map[str, list[map[str, value]]] genForceGraph(M3 model, map[value, set[loc]] values) {
+public map[str, list[map[str, value]]] genForceGraph(M3 model, map[value, set[loc]] values, str cloneType) {
     map[str, list[map[str, value]]] content = ();
 
     set[str] fileSet = { file.path | file <- files(model.containment)};
@@ -37,7 +37,7 @@ public map[str, list[map[str, value]]] genForceGraph(M3 model, map[value, set[lo
 
     content["links"] = concat([genLinks(val, reprs) | val <- domain(reprs)]);
 
-    dumpToJson("output/force_graph.json", content);
+    dumpToJson("output/force_graph<cloneType>.json", content);
 
     return content;
 }

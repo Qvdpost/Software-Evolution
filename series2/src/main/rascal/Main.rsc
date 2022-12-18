@@ -10,8 +10,8 @@ import Set;
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
-import lib::AstLib;
 import lib::Debug;
+
 import metrics::duplication::Clones;
 import metrics::duplication::Preprocessing;
 import metrics::volume::LoC;
@@ -20,7 +20,7 @@ import vis::Charts;
 import util::IDEServices;
 import output::Generate;
 
-
+// Add each clone map to a single JSON file.
 tuple[map[str, map[str,value]], int, int] addCloneClassToJson(str CloneClassType,  map[value, set[loc]] cloneMap) {
     // Initialize content of a type of clones
     map[str, map[str,value]] cloneClassContent = ( CloneClassType : (
@@ -60,6 +60,7 @@ tuple[map[str, map[str,value]], int, int] addCloneClassToJson(str CloneClassType
     return <cloneClassContent, totalCloneLoc, counter>;
 }
 
+// Print clonemap statistics in a readable format
 map[str,map[str,value]] prettyPrintCloneMap(str cloneType, map[value, set[loc]] cloneMap, int totalCodeLines) {
     map[str,map[str,value]] jsonContents = ();
 
@@ -78,9 +79,10 @@ map[str,map[str,value]] prettyPrintCloneMap(str cloneType, map[value, set[loc]] 
     return jsonContent;
 }
 
-void analyseProject(loc project, int cloneWeight) {
+void analyseProject(loc project, int cloneWeight, bool printCloneMaps = false) {
+     datetime startTime = now();
     <model, asts> = getASTs(project);
-    <totalCodeLines, _> = mainLoC(project);
+    totalCodeLines = mainLoC(project);
 
     // Initialize data for JSON output
     list[map[str,map[str,value]]] outputList = [];
@@ -92,64 +94,74 @@ void analyseProject(loc project, int cloneWeight) {
     // Get map containing all  Type 1 clones
     map[value, set[loc]] type1Map = getCloneMap(asts, cloneWeight);
 
-    genForceGraph(model, type1Map);
+    genForceGraph(model, type1Map, "type1");
 
     // Rewrite to map to get output for graph data
     type1CloneList = getSlocs(type1Map);
     barChartData = convertToCharData(type1CloneList);
     outputList += prettyPrintCloneMap("1", type1Map, totalCodeLines);
 
-    // showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
+    showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
+
 
     // Rewrite AST for type 2 clones
-    // asts = rewriteAST(asts);
+    asts = rewriteAST(asts);
 
-    // type2Map = getCloneMap(asts, cloneWeight);
-    // type2CloneList = getSlocs(type1Map);
-    // barChartData = convertToCharData(type2CloneList);
+    type2Map = getCloneMap(asts, cloneWeight);
+    type2CloneList = getSlocs(type2Map);
+    barChartData = convertToCharData(type2CloneList);
 
-    // outputList += prettyPrintCloneMap("2", type2Map, totalCodeLines);
+    outputList += prettyPrintCloneMap("2", type2Map, totalCodeLines);
+    showInteractiveContent(barChart(barChartData,title="Type 2 Clones", colorMode=\dataset()));
+    genForceGraph(model, type2Map, "type2");
 
-    // // Type 3
-    // type3Map = getType3Clones(asts, cloneWeight);
-    // outputList += prettyPrintCloneMap("3", type3Map, totalCodeLines);
+    // Type 3
+    type3Map = getType3Clones(asts, cloneWeight);
+    outputList += prettyPrintCloneMap("3", type3Map, totalCodeLines);
 
-    // // Add project data and write all clones to a JSON file
-    // outputList = insertAt(outputList,0,(
-    //     "ProjectData" : (
-    //             "ProjectName" : "<project>",
-    //             "TotalSloc" : totalCodeLines
-    //         )
-    // ));
+    type3CloneList = getSlocs(type3Map);
+    barChartData = convertToCharData(type3CloneList);
+    showInteractiveContent(barChart(barChartData,title="Type 3 Clones", colorMode=\dataset()));
+    genForceGraph(model, type3Map, "type3");
 
-    // dumpToJson("out.json", outputList);
+    // Add project data and write all clones to a JSON file
+    outputList = insertAt(outputList,0,(
+        "ProjectData" : (
+                "ProjectName" : "<project>",
+                "TotalSloc" : totalCodeLines
+            )
+    ));
 
-    // println("----------------------------------------\n");
-    // println("Type  1:");
-    // println("----------------------------------------");
+    // Write all clone data to a JSON file
+    dumpToJson("out.json", outputList);
 
-    // printCloneMap(type1Map);
+    if (printCloneMaps) {
+        println("----------------------------------------\n");
+        println("Type  1:");
+        println("----------------------------------------");
 
-    // println("----------------------------------------\n");
-    // println("Type  2:");
-    // println("----------------------------------------");
+        printCloneMap(type1Map);
 
-    // printCloneMap(type2Map);
+        println("----------------------------------------\n");
+        println("Type  2:");
+        println("----------------------------------------");
 
-    // println("----------------------------------------\n");
-    // println("Type  3:");
-    // println("----------------------------------------");
+        printCloneMap(type2Map);
 
-    // printCloneMap(type3Map);
+        println("----------------------------------------\n");
+        println("Type  3:");
+        println("----------------------------------------");
+
+        printCloneMap(type3Map);
+    }
 }
 
 
 void main() {
-    int cloneWeight = 20;
+    int cloneWeight = 30;
     datetime startTime = now();
-    // analyseProject(|project://tinyJava|, cloneWeight);
-    // analyseProject(|project://sampleJava|, cloneWeight);
-    analyseProject(|project://smallsql0.21_src|, cloneWeight);
+    analyseProject(|project://sampleJava|, cloneWeight);
+    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
     // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
     println(createDuration(startTime, now()));
 }

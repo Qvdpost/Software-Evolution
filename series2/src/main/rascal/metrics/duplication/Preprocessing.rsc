@@ -3,11 +3,6 @@ module metrics::duplication::Preprocessing
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
-import lib::Debug;
-import lib::AstLib;
-
-import IO;
-import Node;
 
 bool isVarType(Expression expr) {
 	if (expr.decl.scheme == "java+variable")
@@ -22,6 +17,7 @@ bool isVarType(Expression expr) {
 	return false;
 }
 
+// Type rewriter
 str typToString(TypeSymbol typ) {
 	switch (typ) {
 		case \class(_, _): return "class";

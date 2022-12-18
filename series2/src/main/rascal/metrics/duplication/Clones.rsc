@@ -1,16 +1,10 @@
 module metrics::duplication::Clones
 
-import metrics::volume::LoC;
-
 import lang::java::m3::Core;
 import lang::java::m3::AST;
 import lib::Common;
-import lib::Debug;
-import lib::AstLib;
 import metrics::volume::LoC;
 
-import IO;
-import String;
 import List;
 import Set;
 import Map;
@@ -18,6 +12,7 @@ import Node;
 import Location;
 import util::Math;
 
+// Add an unset node location to HashMap
 map[value, set[loc]] initOrIncrMap(map[value, set[loc]] mapping, node _Node) {
     node unsetNode = unsetRec(_Node);
 
@@ -28,6 +23,10 @@ map[value, set[loc]] initOrIncrMap(map[value, set[loc]] mapping, node _Node) {
 	return mapping;
 }
 
+// Rewrite to lrel datatype as input for the bar charts.
+// Uses the total lines of code per clone as key value.
+//
+// returns sorted lrel
 public lrel[int,list[value]] getSlocs(map[value, set[loc]] cloneMap){
     map[int, list[value]] cleanMap = ();
     for (key <- cloneMap){
@@ -40,6 +39,7 @@ public lrel[int,list[value]] getSlocs(map[value, set[loc]] cloneMap){
     return sortedList;
 }
 
+// Return the total number of clones for a given clone map
 public int getNumberOfClones(map[value, set[loc]] cloneMap){
     int counter = 0;
     for ( key <- cloneMap) {
@@ -48,15 +48,6 @@ public int getNumberOfClones(map[value, set[loc]] cloneMap){
         }
     }
     return counter;
-}
-
-public void printCloneMap(map[value, set[loc]] cloneMap){
-    for ( key <- cloneMap) {
-        for (l<- cloneMap[key]) {
-            iprintln(l);
-        }
-        iprintln("----------");
-    }
 }
 
 map[str, map[loc, value]] explodeDuplicates(map[set[loc], value] duplicates) {
@@ -141,6 +132,10 @@ map[value, set[loc]] getDuplicates(map[value, set[loc]] occurrences, int treshol
     return result;
 }
 
+// Method to get a type-1 or type-2 clone map, based on the type of AST that is given.
+//
+// Returns a map with as key the unset node of the clone and a svalue a set of the locations of
+// that clone.
 public map[value, set[loc]] getCloneMap(list[Declaration] asts, int weight) {
     map[value, set[loc]] nodeAst = ();
     list[tuple[value, loc]] subsumptions = [];
@@ -150,11 +145,13 @@ public map[value, set[loc]] getCloneMap(list[Declaration] asts, int weight) {
         case _Node: \method(_,name,_,_, imp: \block(impl)) : {
             blockSize = size(impl);
 
-            // Add entire methods to the map to find short functions that are copied:
+            // Add entire methods to the map to find short function clones
+            // that would otherwise remain undetected.
             if(_Node.decl?) {
                 nodeAst = initOrIncrMap(nodeAst, _Node);
             }
 
+            // Add subsequences of the method body to the HashMap
             for (init <- [0 .. blockSize - 1]) {
                 subImpl = slice(impl, init, blockSize - init);
                 subNode = block(subImpl);
@@ -192,6 +189,8 @@ public map[value, set[loc]] getCloneMap(list[Declaration] asts, int weight) {
 
     nodeAst = mergeBlocks(nodeAst);
 
+    // Check for subsumption, add subsumptions to a list to remove later
+    // altering the HashMap in the same loop didn't seem to work correctly.
     for ( key <- nodeAst) {
         if (size(nodeAst[key]) > 1) {
             for (source <- nodeAst[key]) {
@@ -218,13 +217,17 @@ public map[value, set[loc]] getCloneMap(list[Declaration] asts, int weight) {
     return nodeAst;
 }
 
+// Convert given sorted lrel datatype to readable import for the Rascal Graph
+// functionality
 public rel[str, int] convertToCharData(lrel[int,list[value]] cloneList){
+    // Needed to initialize with a value..
     barChartData = {<"",0>};
 
     for (<amount, locs> <- cloneList) {
         barChartData += {<"0<amount>", size(locs)>};
     }
 
+    // Original value removed
     barChartData = barChartData - {<"",0>};
 
     return barChartData;
@@ -244,10 +247,12 @@ private int getNumberOfChildNodes(node n, int weight) {
     return count;
 }
 
+// Similarity treshold from Baxter's paper
 bool isSimilar(set[node] a, set[node] b) {
     return (2 * size(a & b) / toReal(2 * size(a & b) + size(a - b) + size(b - a))) > 0.9;
 }
 
+// Return a map of type-3 clones
 public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
     map[int, map[node, loc]] blockAST = ();
     list[tuple[value, loc]] subsumptions = [];
@@ -313,6 +318,7 @@ public map[value, set[loc]] getType3Clones(list[Declaration] asts, int weight) {
     for (tuple[node n, loc src] sub <- subsumptions) {
         clones[unsetRec(sub.n)] -= {sub.src};
     }
+
 
     return clones;
 }

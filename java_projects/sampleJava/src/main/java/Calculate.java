@@ -82,4 +82,29 @@ public class Calculate {
 
         return  result - y;
     }
+
+	public void testOrderBy_varchar_GroupBy() throws Exception{
+		init();
+		Connection con = AllTests.getConnection();
+		Statement st = con.createStatement();
+		ResultSet rs;
+		String oldValue;
+
+		rs = st.executeQuery("SELECT first(v) cc FROM " + table1 + " Group By i ORDER  by first(V)");
+
+		assertTrue( rs.next() );
+
+		oldValue = rs.getString("cc");
+		assertNull(oldValue);
+		assertTrue( rs.next() );
+		oldValue = rs.getString("cc");
+
+		int count = 1;
+		while(rs.next()){
+			assertTrue( oldValue.compareTo( rs.getString("cc") ) < 0 );
+			oldValue = rs.getString("cc");
+			count++;
+		}
+		assertEquals( valueCount, count );
+	}
 }
