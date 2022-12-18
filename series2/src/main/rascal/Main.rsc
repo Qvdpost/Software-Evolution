@@ -79,7 +79,7 @@ map[str,map[str,value]] prettyPrintCloneMap(str cloneType, map[value, set[loc]] 
     return jsonContent;
 }
 
-void analyseProject(loc project, int cloneWeight, bool printCloneMaps = false) {
+void analyseProject(loc project, int cloneWeight, bool printCloneMaps) {
      datetime startTime = now();
     <model, asts> = getASTs(project);
     totalCodeLines = mainLoC(project);
@@ -98,30 +98,30 @@ void analyseProject(loc project, int cloneWeight, bool printCloneMaps = false) {
 
     // Rewrite to map to get output for graph data
     type1CloneList = getSlocs(type1Map);
-    barChartData = convertToCharData(type1CloneList);
+    barChartData1 = convertToCharData(type1CloneList);
+
+    // Add to output JSON file
     outputList += prettyPrintCloneMap("1", type1Map, totalCodeLines);
-
-    showInteractiveContent(barChart(barChartData,title="Type 1 Clones", colorMode=\dataset()));
-
 
     // Rewrite AST for type 2 clones
     asts = rewriteAST(asts);
 
     type2Map = getCloneMap(asts, cloneWeight);
     type2CloneList = getSlocs(type2Map);
-    barChartData = convertToCharData(type2CloneList);
+    barChartData2 = convertToCharData(type2CloneList);
 
+    // Add to output JSON file
     outputList += prettyPrintCloneMap("2", type2Map, totalCodeLines);
-    showInteractiveContent(barChart(barChartData,title="Type 2 Clones", colorMode=\dataset()));
     genForceGraph(model, type2Map, "type2");
 
     // Type 3
     type3Map = getType3Clones(asts, cloneWeight);
+    type3CloneList = getSlocs(type3Map);
+    barChartData3 = convertToCharData(type3CloneList);
+
+    // Add to output JSON file
     outputList += prettyPrintCloneMap("3", type3Map, totalCodeLines);
 
-    type3CloneList = getSlocs(type3Map);
-    barChartData = convertToCharData(type3CloneList);
-    showInteractiveContent(barChart(barChartData,title="Type 3 Clones", colorMode=\dataset()));
     genForceGraph(model, type3Map, "type3");
 
     // Add project data and write all clones to a JSON file
@@ -153,6 +153,11 @@ void analyseProject(loc project, int cloneWeight, bool printCloneMaps = false) {
         println("----------------------------------------");
 
         printCloneMap(type3Map);
+
+
+        showInteractiveContent(barChart(barChartData1,title="Type 1 Clones", colorMode=\dataset()));
+        showInteractiveContent(barChart(barChartData2,title="Type 2 Clones", colorMode=\dataset()));
+        showInteractiveContent(barChart(barChartData3,title="Type 3 Clones", colorMode=\dataset()));
     }
 }
 
@@ -160,8 +165,8 @@ void analyseProject(loc project, int cloneWeight, bool printCloneMaps = false) {
 void main() {
     int cloneWeight = 30;
     datetime startTime = now();
-    analyseProject(|project://sampleJava|, cloneWeight);
-    // analyseProject(|project://smallsql0.21_src|, cloneWeight);
-    // analyseProject(|project://hsqldb-2.3.1|, cloneWeight);
+    // analyseProject(|project://sampleJava|, cloneWeight, false);
+    analyseProject(|project://smallsql0.21_src|, cloneWeight, false);
+    // analyseProject(|project://hsqldb-2.3.1|, cloneWeight, false);
     println(createDuration(startTime, now()));
 }
